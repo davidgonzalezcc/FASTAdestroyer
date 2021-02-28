@@ -7,5 +7,5 @@ int main() {
 }
 
 void misHuevos(){
-     
+     cout << "hola"; 
 }
