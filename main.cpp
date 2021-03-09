@@ -28,3 +28,11 @@ void leerArchivo(){
 
 
 } 
+
+void cargar (){
+
+}
+
+void conteo(){
+  
+}
