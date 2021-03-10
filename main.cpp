@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 using namespace std;
-void leerArchivo();
+void leerArchivo(string);
 
 int main() {
 
@@ -70,7 +70,8 @@ bool salir = false;
   }
 
   cout << endl; 
-  leerArchivo();
+  string t = "ejemplofasta1.fa"; 
+  leerArchivo(t);
 
 }
 
