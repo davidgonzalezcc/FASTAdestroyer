@@ -82,28 +82,28 @@ void leerArchivo(string archivo, list<char>& listaADN){
       ifstream arch; 
       string txt;
       char *p; 
-      char temp[100]; 
+      char temp[5000]; 
 
      arch.open(archivo, ios::in); //Se abre el archivo
      if(arch.fail()){ //Condicion por si falla
        cout << "No se puede abrir" << endl; 
        exit(1);
      }
-
     
      while(!arch.eof()){
-
       getline(arch, txt);
       strcpy(temp, txt.c_str()); 
       
       p = strtok(temp, ">"); 
-
+      
       while(p != NULL){
+        if(strstr(p, ">")){
+          cout << "ENCONTRO" << endl; 
+          system("pause"); 
+        } 
         cout << p << endl; 
         p = strtok(NULL, ">"); 
       }
-      
-       //cout << txt << " " << endl;
 
      }
 
