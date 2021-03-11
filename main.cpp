@@ -14,7 +14,7 @@ char comand[50];
 char *entrada;
 bool salir = false; 
 list <char> listaADN; 
-cout<<"tryprueba";
+cout<<"trypruebamaster";
 
   while(salir != true){
     cout << "~$ " ;
