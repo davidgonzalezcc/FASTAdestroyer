@@ -3,15 +3,18 @@
 #include <conio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <list>
 
 using namespace std;
-void leerArchivo(string);
+void leerArchivo(string, list <char> &);
 
 int main() {
 
 char comand[50]; 
 char *entrada;
 bool salir = false; 
+list <char> listaADN; 
+
 
   while(salir != true){
     cout << "~$ " ;
@@ -71,13 +74,15 @@ bool salir = false;
 
   cout << endl; 
   string t = "ejemplofasta1.fa"; 
-  leerArchivo(t);
+  leerArchivo(t, listaADN);
 
 }
 
-void leerArchivo(string archivo){
+void leerArchivo(string archivo, list<char>& listaADN){
       ifstream arch; 
       string txt;
+      char *p; 
+      char temp[100]; 
 
      arch.open(archivo, ios::in); //Se abre el archivo
      if(arch.fail()){ //Condicion por si falla
@@ -85,9 +90,21 @@ void leerArchivo(string archivo){
        exit(1);
      }
 
+    
      while(!arch.eof()){
-       getline(arch, txt);
-       cout << txt << " " << endl;
+
+      getline(arch, txt);
+      strcpy(temp, txt.c_str()); 
+      
+      p = strtok(temp, ">"); 
+
+      while(p != NULL){
+        cout << p << endl; 
+        p = strtok(NULL, ">"); 
+      }
+      
+       //cout << txt << " " << endl;
+
      }
 
      arch.close();
