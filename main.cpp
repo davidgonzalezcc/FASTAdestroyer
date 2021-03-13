@@ -175,6 +175,7 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
        lista_sec aux1 = *it; 
        cout << aux1.nombre << endl; 
        cout << aux1.seq << endl; 
+       cout << "#########" << endl; 
      }
 
 
@@ -201,7 +202,19 @@ menos b bases.
 descripción: Imprime en n líneas (una para secuencia) la información básica (cantidad de bases) de
 cada secuencia. Si la secuencia es completa (i.e. no tiene el código ’-’) imprime el segundo mensaje,
 si no, el tercero.*/
-void listar_secuencias(){
+void listar_secuencias(list<lista_sec>& listaADN){
+    if(listaADN.size() == 0){
+      cout << "La lista está vacía" << endl; 
+    } 
+    else {
+      list<lista_sec> :: iterator it; 
+      for(it = listaADN.begin(); it != listaADN.end(); ++it){
+       lista_sec aux1 = *it; 
+       cout << aux1.nombre << endl; 
+       cout << aux1.seq << endl; 
+       cout << "#########" << endl; 
+     }
+    }
 
 }
 
