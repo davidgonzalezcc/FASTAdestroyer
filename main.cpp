@@ -6,6 +6,11 @@
 #include <list>
 
 using namespace std;
+
+struct secuencia{
+    char nombre [200]; 
+};
+
 void leerArchivo(string, list <char> &);
 
 int main() {
@@ -15,6 +20,7 @@ char *entrada;
 bool salir = false; 
 list <char> listaADN; 
 cout << "Bienvenido al sistema de manejo de archivos FASTA" << endl; 
+cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl; 
 
   while(salir != true){
     cout << "~$ " ;
@@ -60,7 +66,21 @@ cout << "Bienvenido al sistema de manejo de archivos FASTA" << endl;
                                             salir = true; 
                                           }
                                           else {
-                                                cout << "Ingrese un comando valido" << endl; 
+                                              entrada = strstr(comand, "help"); 
+                                              if(entrada != NULL){
+                                                  cout << "_Lista de comandos_" << endl; 
+                                                  cout << "° cargar nombre_archivo: Carga en memoria los datos del archivo seleccionado" << endl;
+                                                  cout << "° conteo: Muestra la cantidad de secuencias cargadas en memoria" << endl; 
+                                                  cout << "° listar_secuencias: Imprime la información básica de las secuencias cargadas" << endl;
+                                                  cout << "° histograma descripcion_secuencia: Muestra la fecuencia de cada código en una secuencia dada" << endl;
+                                                  cout << "° es_subsecuencia subsecuencia: Determina si la secuencia dad existe dentro de las cargadas" << endl;
+                                                  cout << "° enmascarar secuencia: Enmascara una secuencia dada por el usuario" << endl;
+                                                  cout << "° guardar nombre_archivo: guarda en un nuevo archivo (nombre_archivo) las secuencias cargadas en memoria" << endl;
+                                                  cout << "° salir: Terminar ejecucion. Seperderán todos los datos cargados que no se hayan guardado" << endl;
+                                              }
+                                              else{
+                                                  cout << "Ingrese un comando valido" << endl; 
+                                              }                                                
                                           }
                                           }
                                         }
