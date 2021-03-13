@@ -7,18 +7,19 @@
 
 using namespace std;
 
-struct secuencia{
-    char nombre [200]; 
+struct lista_sec{
+    char nombre [200];
+    char seq[5000];  
 };
 
-void leerArchivo(string, list <char> &);
+void leerArchivo(string, list <lista_sec> &);
 
 int main() {
 
 char comand[50]; 
 char *entrada;
 bool salir = false; 
-list <char> listaADN; 
+list <lista_sec> listaADN; 
 cout << "Bienvenido al sistema de manejo de archivos FASTA" << endl; 
 cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl; 
 
@@ -105,7 +106,7 @@ Salida en pantalla.
 (Varias secuencias) n secuencias cargadas correctamente desde “nombre_archivo ”.
 descripción: Carga en memoria los datos contenidos en el archivo identificado por nombre_archivo.*/
 
-void leerArchivo(string archivo, list<char>& listaADN){
+void leerArchivo(string archivo, list<lista_sec>& listaADN){
       ifstream arch; 
       string txt;
       char *p; 
@@ -116,26 +117,68 @@ void leerArchivo(string archivo, list<char>& listaADN){
        cout << "No se puede abrir" << endl; 
        exit(1);
      }
-    
-     while(!arch.eof()){
+    //////
+    char cadena [5000] = ""; 
+    bool nomOcad = true; 
+    int cont = 0;
+     while(!arch.eof()){ 
+      char nom [200]; 
+      char sequ [5000];
+      lista_sec aux; 
       getline(arch, txt);
       strcpy(temp, txt.c_str()); 
-      
-      p = strtok(temp, ">"); 
-      
-      while(p != NULL){
-        if(strstr(p, ">")){
-          cout << "ENCONTRO" << endl; 
-          system("pause"); 
-        } 
-        cout << p << endl; 
-        p = strtok(NULL, ">"); 
+
+      p = strtok(temp, ">");
+
+      if(p!=NULL){
+        if(cont > 0){
+          strcpy(aux.nombre, nom); 
+          strcpy(aux.seq, sequ); 
+          listaADN.push_back(aux); 
+          strcpy(sequ, cadena); 
+        }
+        cont = 1;         
+        nomOcad = true; 
       }
+
+      if(nomOcad=true){
+        strcpy(nom, temp); 
+        nomOcad = false;  
+      } 
+      else {
+        if(nomOcad=false){
+          strcat(sequ, temp);           
+        }
+      }       
 
      }
 
-     arch.close();
+    arch.close();
+/*
+    lista_sec prim; 
+    lista_sec sec; 
+    strcpy(prim.nombre, "seq1"); 
+    strcpy(prim.seq, "sdasdasdasd"); 
+    listaADN.push_back(prim); 
 
+    strcpy(sec.nombre, "seq2"); 
+    strcpy(sec.seq, "sddsfgdfgdfgdfg"); 
+    listaADN.push_back(sec);  */
+
+
+
+
+    cout << listaADN.size() << endl; 
+
+     list<lista_sec> :: iterator it; 
+     for(it = listaADN.begin(); it != listaADN.end(); ++it){
+       lista_sec aux1 = *it; 
+       cout << aux1.nombre << endl; 
+       cout << aux1.seq << endl; 
+     }
+
+
+     system("pause"); 
 
 } 
 
