@@ -13,6 +13,7 @@ struct lista_sec{
 };
 
 void leerArchivo(string, list <lista_sec> &);
+void conteo(list<lista_sec> listaADN); 
 
 int main() {
 string t = "ejemplofasta1.fa"; 
@@ -34,7 +35,7 @@ cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl;
       else {
           entrada = strstr(comand, "conteo"); 
           if(entrada != NULL){
-          cout << "contando" << endl; 
+          conteo(listaADN); 
           } 
           else {
                 entrada = strstr(comand, "listar");
@@ -179,8 +180,8 @@ salida en pantalla:
 (Una sola secuencia) 1 secuencia en memoria.
 (Varias secuencias) n secuencias en memoria.
 descripción: Imprime por pantalla la cantidad de secuencias cargadas en memoria.*/
-void conteo(){
-
+void conteo(list<lista_sec> listaADN){
+  cout << listaADN.size() <<" secuencia(s) cargada(s) en memoria "<<endl;   
 }
 
 /*comando: listar_secuencias
