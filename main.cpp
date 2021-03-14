@@ -14,6 +14,7 @@ struct lista_sec{
 
 void leerArchivo(string, list <lista_sec> &);
 void conteo(list<lista_sec> listaADN); 
+void listar_secuencias(list<lista_sec> listaADN); 
 
 int main() {
 string t = "ejemplofasta1.fa"; 
@@ -40,7 +41,7 @@ cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl;
           else {
                 entrada = strstr(comand, "listar");
                 if(entrada != NULL){
-                cout << "listando" << endl;
+                listar_secuencias(listaADN);
                 } 
                 else {
                       entrada = strstr(comand, "histograma"); 
@@ -159,19 +160,6 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
      
      cout << listaADN.size() <<" secuencia(s) cargada(s) con exito" << endl; 
     arch.close();
-/////////////////////////////////////////////// 
-
-     list<lista_sec> :: iterator it; 
-     for(it = listaADN.begin(); it != listaADN.end(); ++it){
-       lista_sec aux1 = *it;  
-       cout << aux1.nombre << endl; 
-       list<char> :: iterator it1; 
-       for(it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1){
-         cout << *it1; 
-       }
-       cout << endl; 
-     }
-
 } 
 
 /*comando: conteo
@@ -197,20 +185,21 @@ menos b bases.
 descripción: Imprime en n líneas (una para secuencia) la información básica (cantidad de bases) de
 cada secuencia. Si la secuencia es completa (i.e. no tiene el código ’-’) imprime el segundo mensaje,
 si no, el tercero.*/
-void listar_secuencias(list<lista_sec>& listaADN){
-    if(listaADN.size() == 0){
-      cout << "La lista está vacía" << endl; 
-    } 
-    else {
-      list<lista_sec> :: iterator it; 
-      for(it = listaADN.begin(); it != listaADN.end(); ++it){
-       lista_sec aux1 = *it; 
+void listar_secuencias(list<lista_sec> listaADN){
+  if(listaADN.size()==0){
+    cout << "No hay secuencias cargadas" << endl; 
+  } else{
+    list<lista_sec> :: iterator it; 
+     for(it = listaADN.begin(); it != listaADN.end(); ++it){
+       lista_sec aux1 = *it;  
        cout << aux1.nombre << endl; 
-
-       cout << "#########" << endl; 
+       list<char> :: iterator it1; 
+       for(it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1){
+         cout << *it1; 
+       }
+       cout << endl; 
      }
-    }
-
+  }    
 }
 
 /*comando: histograma descripcion_secuencia
