@@ -118,7 +118,6 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
      }
     ////// 
     lista_sec aux; 
-    bool nomOcad = false; 
     int cont = 0;
     int ayuda; 
      while(!arch.eof()){ 
@@ -131,8 +130,7 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
         if(txt[j] == '>'){
           ayuda = 1; 
         }
-      }      
-    
+      }     
 
       if(ayuda!=0){
         if(cont > 0){ 
@@ -140,12 +138,10 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
           aux.secuencias.clear(); 
         }
         cont = 1;         
-        //nomOcad = true; 
       }
 
       if(ayuda!=0){
         strcpy(aux.nombre, temp);  
-        //nomOcad = false;
         ayuda = 0;   
       } 
       else {
@@ -155,9 +151,7 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
           }         
       }       
      }
-
     arch.close();
-
 ///////////////////////////////////////////////
 
     cout << listaADN.size() << endl; 
