@@ -150,8 +150,12 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
             char t = txt[i]; 
             aux.secuencias.push_back(t);  
           }         
-      }       
+      } 
+      if(arch.eof()){
+        listaADN.push_back(aux);
+      }      
      }
+     
      cout << listaADN.size() <<" secuencia(s) cargada(s) con exito" << endl; 
     arch.close();
 /////////////////////////////////////////////// 
