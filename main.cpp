@@ -181,7 +181,11 @@ salida en pantalla:
 (Varias secuencias) n secuencias en memoria.
 descripción: Imprime por pantalla la cantidad de secuencias cargadas en memoria.*/
 void conteo(list<lista_sec> listaADN){
-  cout << listaADN.size() <<" secuencia(s) cargada(s) en memoria "<<endl;   
+  if(listaADN.size()>0){
+    cout << listaADN.size() <<" secuencia(s) cargada(s) en memoria "<<endl; 
+  } else {
+    cout << "No hay secuencias cargadas en memoria" << endl; 
+  }
 }
 
 /*comando: listar_secuencias
