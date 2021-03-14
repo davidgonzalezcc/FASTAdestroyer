@@ -2,14 +2,14 @@
 #include <fstream>
 #include <conio.h>
 #include <string.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <list>
 
 using namespace std;
 
 struct lista_sec{
     char nombre [200];
-    char seq[5000];  
+    list<char> secuencias;   
 };
 
 void leerArchivo(string, list <lista_sec> &);
@@ -109,7 +109,6 @@ descripción: Carga en memoria los datos contenidos en el archivo identificado p
 void leerArchivo(string archivo, list<lista_sec>& listaADN){
       ifstream arch; 
       string txt;
-      char *p; 
       char temp[5000]; 
 
      arch.open(archivo, ios::in); //Se abre el archivo
@@ -117,69 +116,62 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
        cout << "No se puede abrir" << endl; 
        exit(1);
      }
-    //////
-    char cadena [5000] = ""; 
-    bool nomOcad = true; 
+    ////// 
+    lista_sec aux; 
+    bool nomOcad = false; 
     int cont = 0;
+    int ayuda; 
      while(!arch.eof()){ 
-      char nom [200]; 
-      char sequ [5000];
-      lista_sec aux; 
+      char nom [200];
+      ayuda = 0; 
       getline(arch, txt);
       strcpy(temp, txt.c_str()); 
 
-      p = strtok(temp, ">");
+      for(int j=0; j<txt.size(); j++){
+        if(txt[j] == '>'){
+          ayuda = 1; 
+        }
+      }      
+    
 
-      if(p!=NULL){
-        if(cont > 0){
-          strcpy(aux.nombre, nom); 
-          strcpy(aux.seq, sequ); 
+      if(ayuda!=0){
+        if(cont > 0){ 
           listaADN.push_back(aux); 
-          strcpy(sequ, cadena); 
+          aux.secuencias.clear(); 
         }
         cont = 1;         
-        nomOcad = true; 
+        //nomOcad = true; 
       }
 
-      if(nomOcad=true){
-        strcpy(nom, temp); 
-        nomOcad = false;  
+      if(ayuda!=0){
+        strcpy(aux.nombre, temp);  
+        //nomOcad = false;
+        ayuda = 0;   
       } 
       else {
-        if(nomOcad=false){
-          strcat(sequ, temp);           
-        }
+          for(int i=0; i<txt.size(); i++){
+            char t = txt[i]; 
+            aux.secuencias.push_back(t);  
+          }         
       }       
-
      }
 
     arch.close();
-/*
-    lista_sec prim; 
-    lista_sec sec; 
-    strcpy(prim.nombre, "seq1"); 
-    strcpy(prim.seq, "sdasdasdasd"); 
-    listaADN.push_back(prim); 
 
-    strcpy(sec.nombre, "seq2"); 
-    strcpy(sec.seq, "sddsfgdfgdfgdfg"); 
-    listaADN.push_back(sec);  */
-
-
-
+///////////////////////////////////////////////
 
     cout << listaADN.size() << endl; 
 
      list<lista_sec> :: iterator it; 
      for(it = listaADN.begin(); it != listaADN.end(); ++it){
-       lista_sec aux1 = *it; 
+       lista_sec aux1 = *it;  
        cout << aux1.nombre << endl; 
-       cout << aux1.seq << endl; 
-       cout << "#########" << endl; 
+       list<char> :: iterator it1; 
+       for(it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1){
+         cout << *it1; 
+       }
+       cout << endl; 
      }
-
-
-     system("pause"); 
 
 } 
 
@@ -211,7 +203,7 @@ void listar_secuencias(list<lista_sec>& listaADN){
       for(it = listaADN.begin(); it != listaADN.end(); ++it){
        lista_sec aux1 = *it; 
        cout << aux1.nombre << endl; 
-       cout << aux1.seq << endl; 
+
        cout << "#########" << endl; 
      }
     }
