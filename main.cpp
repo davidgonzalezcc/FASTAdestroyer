@@ -15,7 +15,7 @@ struct lista_sec{
 void leerArchivo(string, list <lista_sec> &);
 
 int main() {
-
+string t = "ejemplofasta1.fa"; 
 char comand[50]; 
 char *entrada;
 bool salir = false; 
@@ -29,6 +29,7 @@ cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl;
     entrada = strstr(comand, "cargar"); 
      if(entrada != NULL){
        cout << "cargando" << endl; 
+       leerArchivo(t, listaADN);
       }
       else {
           entrada = strstr(comand, "conteo"); 
@@ -94,8 +95,8 @@ cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl;
   }
 
   cout << endl; 
-  string t = "ejemplofasta1.fa"; 
-  leerArchivo(t, listaADN);
+  
+  
 
 }
 
@@ -151,10 +152,9 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
           }         
       }       
      }
+     cout << listaADN.size() <<" secuencia(s) cargada(s) con exito" << endl; 
     arch.close();
-///////////////////////////////////////////////
-
-    cout << listaADN.size() << endl; 
+/////////////////////////////////////////////// 
 
      list<lista_sec> :: iterator it; 
      for(it = listaADN.begin(); it != listaADN.end(); ++it){
