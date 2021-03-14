@@ -81,9 +81,16 @@ cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl;
                                                   cout << "° enmascarar secuencia: Enmascara una secuencia dada por el usuario" << endl;
                                                   cout << "° guardar nombre_archivo: guarda en un nuevo archivo (nombre_archivo) las secuencias cargadas en memoria" << endl;
                                                   cout << "° salir: Terminar ejecucion. Seperderán todos los datos cargados que no se hayan guardado" << endl;
+                                                  cout << "° clean: Limpia la pantalla" << endl; 
                                               }
                                               else{
+                                                entrada = strstr(comand, "clean");
+                                                if(entrada != NULL){
+                                                  system("cls"); 
+                                                }
+                                                else{
                                                   cout << "Ingrese un comando valido" << endl; 
+                                                }                                                  
                                               }                                                
                                           }
                                           }
@@ -186,6 +193,7 @@ descripción: Imprime en n líneas (una para secuencia) la información básica 
 cada secuencia. Si la secuencia es completa (i.e. no tiene el código ’-’) imprime el segundo mensaje,
 si no, el tercero.*/
 void listar_secuencias(list<lista_sec> listaADN){
+  int a = 0; 
   if(listaADN.size()==0){
     cout << "No hay secuencias cargadas" << endl; 
   } else{
@@ -193,6 +201,18 @@ void listar_secuencias(list<lista_sec> listaADN){
      for(it = listaADN.begin(); it != listaADN.end(); ++it){
        lista_sec aux1 = *it;  
        cout << aux1.nombre << endl; 
+      //para conocer si es indeterminado
+       list<char> :: iterator it2; 
+       for(it2 = aux1.secuencias.begin(); it2 != aux1.secuencias.end(); ++it2){
+         if(*it2 == '-'){
+           a = 1 ;          
+         }
+       }
+      if(a==0){
+        cout << "Secuencia completa de archivo no vacio" << endl; 
+      } else {
+        cout << "Secuencia incompleta de archivo no vacio" << endl; 
+      }
        list<char> :: iterator it1; 
        for(it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1){
          cout << *it1; 
