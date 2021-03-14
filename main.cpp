@@ -17,9 +17,10 @@ void conteo(list<lista_sec> listaADN);
 void listar_secuencias(list<lista_sec> listaADN); 
 
 int main() {
-string t = "ejemplofasta1.fa"; 
+//string t; 
 char comand[50]; 
 char *entrada;
+char X [100]; 
 bool salir = false; 
 list <lista_sec> listaADN; 
 cout << "Bienvenido al sistema de manejo de archivos FASTA" << endl; 
@@ -28,9 +29,15 @@ cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl;
   while(salir != true){
     cout << "~$ " ;
     cin.getline(comand, 50, '\n' );
-    entrada = strstr(comand, "cargar"); 
+    entrada = strstr(comand, "cargar");  
      if(entrada != NULL){
-       cout << "cargando" << endl; 
+       cout << "cargando" << endl;
+       char *p; 
+       int conta = 0; 
+       p=strtok(entrada, " ");
+       p=strtok(NULL, " ");
+       strcpy(X, p); 
+       string t(X); 
        leerArchivo(t, listaADN);
       }
       else {
@@ -39,7 +46,7 @@ cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl;
           conteo(listaADN); 
           } 
           else {
-                entrada = strstr(comand, "listar");
+                entrada = strstr(comand, "listar_secu"); //Corregir
                 if(entrada != NULL){
                 listar_secuencias(listaADN);
                 } 
@@ -231,7 +238,7 @@ define como el conteo (frecuencia) de cada código en la secuencia. Por cada lí
 caracter de salto de línea) se escribe el código y la cantidad de veces que aparece en la secuencia. El
 ordenamiento del histograma está dado por la Tabla 1.*/
 void histograma(){
-
+    
 }
 
 /*comando: es_subsecuencia secuencia
