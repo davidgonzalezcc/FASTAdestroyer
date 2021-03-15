@@ -24,7 +24,7 @@ char X [100];
 bool salir = false; 
 list <lista_sec> listaADN; 
 cout << "Bienvenido al sistema de manejo de archivos FASTA" << endl; 
-cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl; 
+cout << "SI NECESITA AYUDA DIGITE: AYUDA"<< endl; 
 
   while(salir != true){
     cout << "~$ " ;
@@ -77,7 +77,7 @@ cout << "SI NECESITA AYUDA DIGITE: HELP"<< endl;
                                             salir = true; 
                                           }
                                           else {
-                                              entrada = strstr(comand, "help"); 
+                                              entrada = strstr(comand, "ayuda"); 
                                               if(entrada != NULL){
                                                   cout << "_Lista de comandos_" << endl; 
                                                   cout << "° cargar nombre_archivo: Carga en memoria los datos del archivo seleccionado" << endl;
