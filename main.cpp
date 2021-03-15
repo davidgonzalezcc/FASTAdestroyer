@@ -168,8 +168,7 @@ cout << "SI NECESITA AYUDA DIGITE: ayuda"<< endl;
           }   
   }
 
-  cout << endl; 
-  
+  cout << endl;   
   
 
 }
@@ -278,7 +277,7 @@ void listar_secuencias(list<lista_sec> listaADN){
       } else {
         cout << "Secuencia incompleta de archivo no vacio" << endl; 
       }
-      cout << aux1.nombre << endl;
+      cout << "Secuencia " << aux1.nombre << " contiene " << aux1.secuencias.size() << " bases." << endl;
        list<char> :: iterator it1; 
        for(it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1){
          cout << *it1; 
