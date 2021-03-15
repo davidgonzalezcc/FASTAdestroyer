@@ -13,6 +13,8 @@ struct lista_sec{
 void leerArchivo(string, list <lista_sec> &);
 void conteo(list<lista_sec> listaADN); 
 void listar_secuencias(list<lista_sec> listaADN); 
+void histograma(list<char>,string); 
+lista_sec buscarLista(list<lista_sec>, string);
 
 int main() {
 //string t; 
@@ -57,6 +59,14 @@ cout << "SI NECESITA AYUDA DIGITE: ayuda"<< endl;
                       entrada2 = strstr(comand, "ayuda"); 
                       if(entrada != NULL && entrada2==NULL){
                         cout << "histograma" << endl; 
+                        char *q;  
+                        q=strtok(entrada, " ");
+                        q=strtok(NULL, " ");
+                        strcpy(X, q); 
+                        string m(X);
+                        cout<<"Nombre: "<<m<<endl;
+                        lista_sec lista_temporal = buscarLista(listaADN,m); 
+                        histograma(lista_temporal.secuencias,m); 
                       }   
                       else {
                             entrada = strstr(comand, "es_subsecuencia");
@@ -295,8 +305,87 @@ descripción: Imprime el histograma de una secuencia, en caso de que exista. El 
 define como el conteo (frecuencia) de cada código en la secuencia. Por cada línea (’\n’ es el
 caracter de salto de línea) se escribe el código y la cantidad de veces que aparece en la secuencia. El
 ordenamiento del histograma está dado por la Tabla 1.*/
-void histograma(){
-    
+void histograma(list<char> lista,string m){
+
+  list<pair<int,char>> bases;
+
+  pair<int,char> p1 = make_pair(0,'A');
+  bases.push_back(p1);
+  pair<int,char> p2 = make_pair(0,'C');
+  bases.push_back(p2);
+  pair<int,char> p3 = make_pair(0,'G');
+  bases.push_back(p3);
+  pair<int,char> p4 = make_pair(0,'T');
+  bases.push_back(p4);
+  pair<int,char> p5 = make_pair(0,'U');
+  bases.push_back(p5);
+  pair<int,char> p6 = make_pair(0,'R');
+  bases.push_back(p6);
+  pair<int,char> p7 = make_pair(0,'Y');
+  bases.push_back(p7);
+  pair<int,char> p8 = make_pair(0,'K');
+  bases.push_back(p8);
+  pair<int,char> p9 = make_pair(0,'M');
+  bases.push_back(p9);
+  pair<int,char> p10 = make_pair(0,'S');
+  bases.push_back(p10);
+  pair<int,char> p11 = make_pair(0,'W');
+  bases.push_back(p11);
+  pair<int,char> p12 = make_pair(0,'B');
+  bases.push_back(p12);
+  pair<int,char> p13 = make_pair(0,'D');
+  bases.push_back(p13);
+  pair<int,char> p14 = make_pair(0,'H');
+  bases.push_back(p14);
+  pair<int,char> p15 = make_pair(0,'V');
+  bases.push_back(p15);
+  pair<int,char> p16 = make_pair(0,'N');
+  bases.push_back(p16);
+  pair<int,char> p17 = make_pair(0,'X');
+  bases.push_back(p17);
+
+
+
+
+  list<char> :: iterator it1;
+  list<pair<int,char>> :: iterator it2;
+  char actual; 
+  pair <int,char> base_actual;
+     for(it1 = lista.begin(); it1 != lista.end(); ++it1){
+       actual = *it1;
+       for(it2 = bases.begin(); it2 != bases.end(); ++it2){
+         pair<int,char> base_actual = *it2;
+         if(actual == base_actual.second){
+           base_actual.first++;
+           *it2 = base_actual;
+         }
+        }
+      }
+
+    list<pair<int,char>> :: iterator it3;
+
+    for(it3 = bases.begin(); it3 != bases.end(); ++it3){
+         pair<int,char> base_actual = *it3;
+         cout<<"Base: "<<base_actual.second<<" : "<<base_actual.first<<endl;
+         }
+
+}
+
+lista_sec buscarLista(list<lista_sec> listaADN, string nombre){
+
+  list<lista_sec> :: iterator it;
+  lista_sec actual = listaADN.front();
+
+  for(it = listaADN.begin(); it != listaADN.end(); ++it){
+    lista_sec actual = *it;
+    char * nombre_actual = actual.nombre;
+    char * aux = const_cast<char*>(nombre.c_str());
+
+    if(strcmp(nombre_actual,aux)==0)
+      return actual;
+  }
+  return actual;
+ 
 }
 
 /*comando: es_subsecuencia secuencia
