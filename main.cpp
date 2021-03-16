@@ -344,13 +344,12 @@ void histograma(list<char> lista,string m){
   pair<int,char> p17 = make_pair(0,'X');
   bases.push_back(p17);
 
-
-
-
   list<char> :: iterator it1;
   list<pair<int,char>> :: iterator it2;
-  char actual; 
+  char actual;
+
   pair <int,char> base_actual;
+  
      for(it1 = lista.begin(); it1 != lista.end(); ++it1){
        actual = *it1;
        for(it2 = bases.begin(); it2 != bases.end(); ++it2){
@@ -408,7 +407,18 @@ nada.
 (Varias subsecuencias esmascaradas) s secuencias han sido enmascaradas.
 descripción: Enmascara una secuencia dada por el usuario, si existe. Los elementos que pertenecen
 a la subsecuencia se enmascaran, cambiando cada código por el código ’X’*/
-void enmascarar(){
+void enmascarar(lista_sec lista){
+      
+  lista<char> :: iterator it;
+
+  for(it = listaADN.begin(); it != listaADN.end(); ++it){
+    lista_sec actual = *it;
+    char * nombre_actual = actual.nombre;
+    char * aux = const_cast<char*>(nombre.c_str());
+
+    if(strcmp(nombre_actual,aux)==0)
+      return actual;
+  }
   
 }
 
