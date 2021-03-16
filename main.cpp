@@ -10,11 +10,16 @@ struct lista_sec{
     list<char> secuencias;   
 };
 
-void leerArchivo(string, list <lista_sec> &);
-void conteo(list<lista_sec> listaADN); 
-void listar_secuencias(list<lista_sec> listaADN); 
-void histograma(list<char>,string); 
+
 lista_sec buscarLista(list<lista_sec>, string);
+void leerArchivo(string, list <lista_sec> &);
+void conteo(list<lista_sec> ); 
+void listar_secuencias(list<lista_sec>); 
+void histograma(list<char>,string); 
+
+void enmascarar(list<lista_sec> &,string);
+void imprimirLista(list<char>);
+
 
 int main() {
 //string t; 
@@ -65,7 +70,7 @@ cout << "SI NECESITA AYUDA DIGITE: ayuda"<< endl;
                         strcpy(X, q); 
                         string m(X);
                         cout<<"Nombre: "<<m<<endl;
-                        lista_sec lista_temporal = buscarLista(listaADN,m); 
+                        lista_sec lista_temporal = buscarLista(listaADN,m);
                         histograma(lista_temporal.secuencias,m); 
                       }   
                       else {
@@ -78,7 +83,14 @@ cout << "SI NECESITA AYUDA DIGITE: ayuda"<< endl;
                                   entrada = strstr(comand, "enmascarar");
                                   entrada2 = strstr(comand, "ayuda");  
                                   if(entrada != NULL && entrada2==NULL){
-                                    cout << "Enmascarando " << endl; 
+                                      cout << "Enmascarar" << endl; 
+                                      char *r;  
+                                      r=strtok(entrada, " ");
+                                      r=strtok(NULL, " ");
+                                      strcpy(X, r); 
+                                      string m(X);
+                                      cout<<"Nombre: "<<m<<endl;
+                                      enmascarar(listaADN,m);
                                   }
                                   else {
                                       entrada = strstr(comand, "guardar ");
@@ -344,13 +356,12 @@ void histograma(list<char> lista,string m){
   pair<int,char> p17 = make_pair(0,'X');
   bases.push_back(p17);
 
-
-
-
   list<char> :: iterator it1;
   list<pair<int,char>> :: iterator it2;
-  char actual; 
+  char actual;
+
   pair <int,char> base_actual;
+  
      for(it1 = lista.begin(); it1 != lista.end(); ++it1){
        actual = *it1;
        for(it2 = bases.begin(); it2 != bases.end(); ++it2){
@@ -371,7 +382,7 @@ void histograma(list<char> lista,string m){
 
 }
 
-lista_sec buscarLista(list<lista_sec> listaADN, string nombre){
+ lista_sec buscarLista(list<lista_sec> listaADN, string nombre){
 
   list<lista_sec> :: iterator it;
   lista_sec actual = listaADN.front();
@@ -382,9 +393,9 @@ lista_sec buscarLista(list<lista_sec> listaADN, string nombre){
     char * aux = const_cast<char*>(nombre.c_str());
 
     if(strcmp(nombre_actual,aux)==0)
-      return actual;
+      return *it;
   }
-  return actual;
+  return *it;
  
 }
 
@@ -408,10 +419,33 @@ nada.
 (Varias subsecuencias esmascaradas) s secuencias han sido enmascaradas.
 descripción: Enmascara una secuencia dada por el usuario, si existe. Los elementos que pertenecen
 a la subsecuencia se enmascaran, cambiando cada código por el código ’X’*/
-void enmascarar(){
-  
+
+void imprimirLista(list<char> lista){
+  list<char> :: iterator it;
+
+  for(it = lista.begin(); it != lista.end(); ++it)
+    cout<<*it;
+  cout<<endl;
 }
 
+void enmascarar(list<lista_sec> &lista, string nombre){
+  
+  char * nombre_aux = const_cast<char*>(nombre.c_str());
+
+  list<lista_sec> :: iterator it;
+  list<char> :: iterator it2;
+
+  //list<char> aux = *lista;
+    for(it = lista.begin(); it != lista.end(); ++it){
+      lista_sec aux = *it;
+      if(strcmp(aux.nombre,nombre_aux)==0){
+        for(it2 = aux.secuencias.begin(); it2 != aux.secuencias.end(); ++it2)
+          *it2 = 'X';
+        *it = aux;
+      }
+      
+    }
+}
 /* comando: guardar nombre_archivo
 salida en pantalla:
 (No hay secuencias cargadas) No hay secuencias cargadas en memoria.
