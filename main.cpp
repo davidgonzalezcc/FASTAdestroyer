@@ -14,7 +14,8 @@ struct lista_sec{
 
 lista_sec buscarLista(list<lista_sec>, string);
 void leerArchivo(string, list <lista_sec> &);
-void conteo(list<lista_sec> ); 
+void conteo(list<lista_sec> );
+void es_subsecuencia(list<lista_sec>,string); 
 void listar_secuencias(list<lista_sec>); 
 void histograma(list<char>,string); 
 void guardarArchivo(string , list<lista_sec>);
@@ -64,47 +65,79 @@ cout << "SI NECESITA AYUDA DIGITE: ayuda"<< endl;
                       entrada = strstr(comand, "histograma"); 
                       entrada2 = strstr(comand, "ayuda"); 
                       if(entrada != NULL && entrada2==NULL){
-                        cout << "histograma" << endl; 
+                         
                         char *q;  
                         q=strtok(entrada, " ");
                         q=strtok(NULL, " ");
                         strcpy(X, q); 
                         string m(X);
-                        cout<<"Nombre: "<<m<<endl;
-                        lista_sec lista_temporal = buscarLista(listaADN,m);
-                        histograma(lista_temporal.secuencias,m); 
+
+                        if(listaADN.size()!=0){
+                          cout << "Histograma" << endl;
+                          lista_sec lista_temporal = buscarLista(listaADN,m);
+                          histograma(lista_temporal.secuencias,m); 
+                        }
+                        else{
+                          cout<<"No hay secuencias cargadas."<<endl;
+                        }
+                        
                       }   
                       else {
                             entrada = strstr(comand, "es_subsecuencia");
                             entrada2 = strstr(comand, "ayuda");  
                             if(entrada != NULL && entrada2==NULL){
                              cout << "Buscando subsecuencia" << endl;
+                              char *i;  
+                              i=strtok(entrada, " ");
+                              i=strtok(NULL, " ");
+                              strcpy(X, i); 
+                              string m(X);
+
+                              if(listaADN.size()!=0){
+                                  cout<<"Nombre: "<<m<<endl;
+                                  es_subsecuencia(listaADN,m);
+                              }
+                              else{
+                                   cout<<"No hay secuencias cargadas."<<endl;         
+                              }
                             }
                             else {
                                   entrada = strstr(comand, "enmascarar");
                                   entrada2 = strstr(comand, "ayuda");  
                                   if(entrada != NULL && entrada2==NULL){
-                                      cout << "Enmascarar" << endl; 
+                                       
                                       char *r;  
                                       r=strtok(entrada, " ");
                                       r=strtok(NULL, " ");
                                       strcpy(X, r); 
                                       string m(X);
-                                      cout<<"Nombre: "<<m<<endl;
-                                      enmascarar(listaADN,m);
+                                      if(listaADN.size()!=0){
+                                        cout << "Enmascarar" << endl;
+                                        cout<<"Nombre: "<<m<<endl;
+                                        enmascarar(listaADN,m);
+                                      }
+                                      else{
+                                        cout<<"No hay secuencias cargadas."<<endl;
+                                      }
+
                                   }
                                   else {
                                       entrada = strstr(comand, "guardar ");
                                       entrada2 = strstr(comand, "ayuda"); 
                                       if(entrada != NULL && entrada2==NULL){
-                                      cout << "Guardar" << endl; 
                                       char *o;  
                                       o=strtok(entrada, " ");
                                       o=strtok(NULL, " ");
                                       strcpy(X, o); 
                                       string m(X);
-                                      cout<<"Nombre: "<<m<<endl;
-                                      guardarArchivo(m,listaADN);
+                                      if(listaADN.size()!=0){
+                                        cout << "Guardar" << endl; 
+                                        cout<<"Nombre: "<<m<<endl;
+                                        guardarArchivo(m,listaADN);
+                                      }
+                                      else{
+                                        cout<<"No hay secuencias cargadas."<<endl;
+                                      }
                                   }
                                       else {
                                           entrada = strstr(comand, "salir"); 
@@ -329,6 +362,8 @@ caracter de salto de línea) se escribe el código y la cantidad de veces que ap
 ordenamiento del histograma está dado por la Tabla 1.*/
 void histograma(list<char> lista,string m){
 
+
+
   list<pair<int,char>> bases;
 
   pair<int,char> p1 = make_pair(0,'A');
@@ -416,8 +451,60 @@ salida en pantalla:
 (Varias secuencias) La secuencia dada se repite s veces.
 descripción: Determina si una secuencia, dada por el usuario, existe dentro de las secuencias
 cargadas. Si es así, determina la cantidad de veces en las que esta secuencia dada se repite.*/
-void es_subsecuencia(){
+void es_subsecuencia(list<lista_sec> listaADN, string x)
+{
+    int n = x.length();
+    char arreglo[n + 1]; 
+    strcpy(arreglo, x.c_str());
+ 
+  
+  int cantRepetidas = 0;
+  if (listaADN.size() == 0)
+  {
+    cout << "No hay secuencias cargadas" << endl;
+  }
+  else
+  {
+    list<lista_sec>::iterator it;
+    
+    lista_sec aux;
+    for(int z=0;z<strlen(arreglo);z++)
 
+    
+    for (it = listaADN.begin(); it != listaADN.end(); ++it)
+    {
+      
+      for (int i=0;i <strlen(arreglo);i++)
+      {
+        int cantRepetidas = 0;
+  
+      ;
+        if (arreglo[i] == x[i]);
+        {
+          
+          int subrepetidas = 1;
+          for (int j = 1; j <x.size(); j++)
+          {
+           
+            if (x[i + j] == x[j])
+            {
+              subrepetidas++;
+            }
+          }
+          if (subrepetidas == x.size())
+          {
+            cantRepetidas++;
+          }
+          subrepetidas = 0;
+        }
+      }
+      
+    }
+    if (cantRepetidas = 0)
+        cout << "No existe la secuencia" << endl;
+      else if (cantRepetidas>=1)
+        cout << "la cantidad de repeticion(es) es= " << cantRepetidas << endl;
+  }
 }
 
 /*comando: enmascarar secuencia
