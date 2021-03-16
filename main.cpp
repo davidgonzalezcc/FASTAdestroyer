@@ -7,7 +7,8 @@ using namespace std;
 
 struct lista_sec{
     char nombre [200];
-    list<char> secuencias;   
+    list<char> secuencias;
+    int longitud_linea = 0;   
 };
 
 
@@ -16,7 +17,7 @@ void leerArchivo(string, list <lista_sec> &);
 void conteo(list<lista_sec> ); 
 void listar_secuencias(list<lista_sec>); 
 void histograma(list<char>,string); 
-
+void guardarArchivo(string , list<lista_sec>);
 void enmascarar(list<lista_sec> &,string);
 void imprimirLista(list<char>);
 
@@ -96,8 +97,15 @@ cout << "SI NECESITA AYUDA DIGITE: ayuda"<< endl;
                                       entrada = strstr(comand, "guardar ");
                                       entrada2 = strstr(comand, "ayuda"); 
                                       if(entrada != NULL && entrada2==NULL){
-                                        cout << "Guardando archivo" << endl; 
-                                      }
+                                      cout << "Guardar" << endl; 
+                                      char *o;  
+                                      o=strtok(entrada, " ");
+                                      o=strtok(NULL, " ");
+                                      strcpy(X, o); 
+                                      string m(X);
+                                      cout<<"Nombre: "<<m<<endl;
+                                      guardarArchivo(m,listaADN);
+                                  }
                                       else {
                                           entrada = strstr(comand, "salir"); 
                                           entrada2 = strstr(comand, "ayuda"); 
@@ -226,6 +234,8 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
         }
       }     
 
+      aux.longitud_linea = txt.size();
+
       if(ayuda!=0){
         if(cont > 0){ 
           listaADN.push_back(aux); 
@@ -233,7 +243,7 @@ void leerArchivo(string archivo, list<lista_sec>& listaADN){
         }
         cont = 1;         
       }
-
+      bool terminado = false;
       if(ayuda!=0){
         strcpy(aux.nombre, temp);  
         ayuda = 0;   
@@ -453,8 +463,31 @@ salida en pantalla:
 (Problemas en archivo) Error guardando en ”nombre_archivo ”.
 descripción: Guarda en el archivo nombre_archivo las secuencias cargadas en memoria. Se debe
 tener en cuenta la justificación (de líneas) del archivo inicial. */
-void guardarArchivo(){
+void guardarArchivo(string nombre, list<lista_sec> lista){
+   ofstream archivo; 
+    archivo.open(nombre, ios::out);
 
+    if(archivo.fail()){
+         cout << "No se pudo abrir abrir el archivo" << endl; 
+         exit(1); 
+    }
+    
+    list<lista_sec> :: iterator it;
+    lista_sec actual;
+    for(it = lista.begin(); it != lista.end(); ++it)
+    {
+      actual = *it;
+      list<char> :: iterator it2;
+      archivo<<actual.nombre<<"\n";
+      cout<<actual.longitud_linea<<endl;
+      for(it2 = actual.secuencias.begin(); it2 != actual.secuencias.end(); ++it2)
+      {
+          archivo << *it2;
+      }
+      archivo <<"\n";
+    }
+
+    archivo.close();
 }
 
 /*comando: salir
