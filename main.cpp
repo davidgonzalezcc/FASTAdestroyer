@@ -15,7 +15,7 @@ struct lista_sec{
 lista_sec buscarLista(list<lista_sec>, string);
 void leerArchivo(string, list <lista_sec> &);
 void conteo(list<lista_sec> );
-void es_subsecuencia(list<lista_sec>,string); 
+int es_subsecuencia(list<lista_sec>,string); 
 void listar_secuencias(list<lista_sec>); 
 void histograma(list<char>,string); 
 void guardarArchivo(string , list<lista_sec>);
@@ -95,7 +95,13 @@ cout << "SI NECESITA AYUDA DIGITE: ayuda"<< endl;
 
                               if(listaADN.size()!=0){
                                   cout<<"Nombre: "<<m<<endl;
-                                  es_subsecuencia(listaADN,m);
+                                  int resultado = es_subsecuencia(listaADN,m);
+                                  if(resultado == 0){
+                                    cout<<"No se han encontrado secuencias iguales."<<endl;
+                                  }
+                                  else{
+                                    cout<<"Se han encontrado "<<resultado<<" secuencias iguales."<<endl;
+                                  }
                               }
                               else{
                                    cout<<"No hay secuencias cargadas."<<endl;         
@@ -451,60 +457,35 @@ salida en pantalla:
 (Varias secuencias) La secuencia dada se repite s veces.
 descripción: Determina si una secuencia, dada por el usuario, existe dentro de las secuencias
 cargadas. Si es así, determina la cantidad de veces en las que esta secuencia dada se repite.*/
-void es_subsecuencia(list<lista_sec> listaADN, string x)
+int es_subsecuencia(list<lista_sec> listaADN, string x)
 {
-    int n = x.length();
-    char arreglo[n + 1]; 
-    strcpy(arreglo, x.c_str());
- 
-  
-  int cantRepetidas = 0;
-  if (listaADN.size() == 0)
-  {
-    cout << "No hay secuencias cargadas" << endl;
-  }
-  else
-  {
-    list<lista_sec>::iterator it;
-    
-    lista_sec aux;
-    for(int z=0;z<strlen(arreglo);z++)
 
+ 
+
+    lista_sec aux = buscarLista(listaADN,x);
+    int veces = 0;
     
-    for (it = listaADN.begin(); it != listaADN.end(); ++it)
+    list<lista_sec> :: iterator it;
+    for(it = listaADN.begin(); it != listaADN.end() ; ++it)
     {
-      
-      for (int i=0;i <strlen(arreglo);i++)
-      {
-        int cantRepetidas = 0;
-  
-      ;
-        if (arreglo[i] == x[i]);
-        {
-          
-          int subrepetidas = 1;
-          for (int j = 1; j <x.size(); j++)
+      lista_sec actual = *it;
+      list<char> :: iterator it2;
+      list<char> :: iterator itpsecuencia;
+      for(it2 = actual.secuencias.begin() ; it2 != actual.secuencias.end() ; ++it2)
+          for(itpsecuencia = aux.secuencias.begin() ; itpsecuencia != aux.secuencias.end() ; ++itpsecuencia)
           {
-           
-            if (x[i + j] == x[j])
-            {
-              subrepetidas++;
+            if(*itpsecuencia != *it2){
+              
             }
+            else{
+              veces++;
+              break;
+            }
+            
+            
           }
-          if (subrepetidas == x.size())
-          {
-            cantRepetidas++;
-          }
-          subrepetidas = 0;
-        }
-      }
-      
     }
-    if (cantRepetidas = 0)
-        cout << "No existe la secuencia" << endl;
-      else if (cantRepetidas>=1)
-        cout << "la cantidad de repeticion(es) es= " << cantRepetidas << endl;
-  }
+return 0;
 }
 
 /*comando: enmascarar secuencia
@@ -566,7 +547,6 @@ void guardarArchivo(string nombre, list<lista_sec> lista){
       actual = *it;
       list<char> :: iterator it2;
       archivo<<actual.nombre<<"\n";
-      cout<<actual.longitud_linea<<endl;
       for(it2 = actual.secuencias.begin(); it2 != actual.secuencias.end(); ++it2)
       {
           archivo << *it2;
