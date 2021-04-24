@@ -564,3 +564,44 @@ descripción: Termina la ejecución de la aplicación*/
 //-ESTE COMANDO SE EJECUTA EN EL MENU INICIAL-//
 
 
+//__________________________________________________//
+//A PARTIR DE ACA ES EL CÓDIGO DE LA SEGUNDA ENTREGA
+//            ALGORITMO DE HUFFMAN                  //
+// ______________________________________________//
+
+/*
+comando: codificar nombre_archivo.fabin
+salida en pantalla:
+(mensaje de error) No se pueden guardar las secuencias cargadas en nombre_archivo.fabin .
+(codificación exitosa) Secuencias codificadas y almacenadas en nombre_archivo.fabin .
+descripción: El comando debe generar el archivo binario con la correspondiente codificación de
+Huffman en el formato descrito más arriba, almacenándolo en disco bajo el nombre:
+nombre_archivo.fabin .
+*/
+
+void codificaHuffman(string archivo, list<lista_sec>& listaADN){
+  //Llamada a leerArchivo para cargar las secuencias de un archivo 
+  //a ecriptar en memoria
+  leerArchivo(archivo, listaADN);
+
+
+}
+
+
+/*
+comando: decodificar nombre_archivo.fabin
+salida en pantalla:
+(mensaje de error) No se pueden cargar las secuencias en nombre_archivo.fabin .
+(decodificación exitosa) Secuencias decodificadas desde nombre_archivo.fabin y cargadas
+en memoria.
+descripción: El comando debe cargar en memoria las secuencias contenidas en el archivo binario
+nombre_archivo.fabin , que contiene una codificación Huffman de un conjunto de secuencias en
+el formato descrito más arriba
+*/
+
+
+
+
+
+
+
