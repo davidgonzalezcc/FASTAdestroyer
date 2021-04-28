@@ -15,6 +15,14 @@ struct lista_sec
   int longitud_linea = 0;
 };
 
+struct lista_sec_codifica
+{
+  char nombre[200];
+  list<string> secuencias;
+  list<char> bases; 
+  int longitud_linea = 0;
+};
+
 struct nodo_huffman
 {
   char base;
@@ -42,6 +50,7 @@ void guardarArchivo(string, list<lista_sec>);
 void enmascarar(list<lista_sec> &, string);
 void imprimirLista(list<char>);
 void encriptado(list<lista_sec> listaADN, string nombrearch);
+void imprimeHuffman(unordered_map<char, string> codificacion);
 
 int main()
 {
@@ -729,34 +738,100 @@ void encriptado(list<lista_sec> listaADN, string nombrearch)
       char aux2 = *it2;
       frecuen[aux2]++;
     }
-    //Fin de lectura inicial
-    //Se agragan los nodos
-    priority_queue<nodo_huffman *, vector<nodo_huffman *>, buscafrecuencia> colapriori;
-    for (auto val : frecuen)
+  } //Fin del for
+
+  priority_queue<nodo_huffman *, vector<nodo_huffman *>, buscafrecuencia> colapriori;
+  //Fin de lectura inicial
+  //Se agragan los nodos
+
+  for (auto val : frecuen)
+  {
+    colapriori.push(asigna_valor(val.first, val.second, nullptr, nullptr));
+  }
+  while (colapriori.size() != 1)
+  {
+    nodo_huffman *izquierdo = colapriori.top();
+    colapriori.pop();
+    nodo_huffman *derecho = colapriori.top();
+    colapriori.pop();
+    int total = izquierdo->frecuen + derecho->frecuen;
+    colapriori.push(asigna_valor('\0', total, izquierdo, derecho));
+  }
+
+  //Creamos la raiz
+  nodo_huffman *raiz = colapriori.top();
+  unordered_map<char, string> codificacion;
+
+  encriptaHuffman(raiz, "", codificacion);
+
+  //Almacenamiento en lista para guardar codificacion
+  list<lista_sec_codifica> auxiliar; //Para almacenar todas las secuencias codificadas
+  //lista_sec_codifica auxipush;
+
+  char tempo[100];
+  list<lista_sec>::iterator it3;
+  for (it3 = listaADN.begin(); it3 != listaADN.end(); ++it3)
+  {
+    lista_sec_codifica auxipush;
+
+    lista_sec auxi = *it3;
+
+    strcpy(tempo, auxi.nombre);
+    string m(tempo);
+    string guardanombre = "";
+    for (char base : m)
     {
-      colapriori.push(asigna_valor(val.first, val.second, nullptr, nullptr));
+      guardanombre += codificacion[base];
     }
-    while (colapriori.size() != 1)
+    strcpy(auxipush.nombre, guardanombre.c_str()); //Almacena el nombre codificado en el auxiliar que se le va a hacer push
+
+    string guardabases = "";
+    list<char>::iterator it4;
+    for (it4 = auxi.secuencias.begin(); it4 != auxi.secuencias.end(); ++it4)
     {
-      nodo_huffman *izquierdo = colapriori.top();
-      colapriori.pop();
-      nodo_huffman *derecho = colapriori.top();
-      colapriori.pop();
-      int total = izquierdo->frecuen + derecho->frecuen;
-      colapriori.push(asigna_valor('\0', total, izquierdo, derecho));
+      char auxibases = *it4;
+      auxipush.secuencias.push_back(codificacion[auxibases]);
+      auxipush.bases.push_back(auxibases);
+
+      //guardabases += codificacion[auxibases];
     }
 
-    //Creamos la raiz
-    nodo_huffman *raiz = colapriori.top();
-    unordered_map<char, string> codificacion;
+    auxiliar.push_back(auxipush);
+  } //Fin del for
 
-    encriptaHuffman(raiz, "", codificacion);
+  //Escritura en el archivo
+  FILE *fp;
+  char nombrearchivo[50];
 
-    cout << "Codigos de huffman son: " << endl; //
-    for (auto pair : codificacion)
-    {
-      cout << pair.first << " " << pair.second << endl;
-    }
+  fp = fopen(nombrearch.c_str(), "ab");
+  if (fp == NULL)
+  {
+    puts("Archivo invalido");
+  }
+  fwrite(&auxiliar, sizeof(lista_sec_codifica), 1, fp);
+  cout << "Se ha creado un archivo de tipo binario con el nombre: " << nombrearch << " de manera satisfactoria." << endl;
+
+  int des;
+  cout << "Le gustaria ver la codificacion de cada caracter? (Si = 0, No = 1)" << endl;
+  cin >> des;
+  if (des == 0)
+  {
+    imprimeHuffman(codificacion);
+  }
+  else
+  {
+    cout << "Ha elegido no ver la codificacion por caracter" << endl;
+  }
+
+  fclose(fp);
+}
+
+void imprimeHuffman(unordered_map<char, string> codificacion)
+{
+  cout << "Frecuencias dadas por algoritmo: " << endl; //
+  for (auto pair : codificacion)
+  {
+    cout << pair.first << " " << pair.second << endl;
   }
 }
 
@@ -770,3 +845,13 @@ descripción: El comando debe cargar en memoria las secuencias contenidas en el 
 nombre_archivo.fabin , que contiene una codificación Huffman de un conjunto de secuencias en
 el formato descrito más arriba
 */
+
+void desencriptar(string nombrearch)
+{
+  list<lista_sec_codifica> auxiliar; 
+  FILE *pf; 
+  pf=fopen(nombrearch.c_str(), "rb");
+  fread(&auxiliar, sizeof(lista_sec_codifica), 1, pf);
+  
+    
+}
