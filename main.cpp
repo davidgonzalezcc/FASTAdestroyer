@@ -2,242 +2,317 @@
 #include <fstream>
 #include <string.h>
 #include <list>
+#include <queue>
+#include <string>
+#include <unordered_map>
 
 using namespace std;
 
-struct lista_sec{
-    char nombre [200];
-    list<char> secuencias;
-    int longitud_linea = 0;   
+struct lista_sec
+{
+  char nombre[200];
+  list<char> secuencias;
+  int longitud_linea = 0;
 };
 
+struct nodo_huffman
+{
+  char base;
+  int frecuen;
+  nodo_huffman *izquierdo, *derecho;
+};
+
+struct buscafrecuencia
+{
+  bool i;
+  bool operator()(nodo_huffman *izquierdo, nodo_huffman *derecho)
+  {
+    return izquierdo->frecuen > derecho->frecuen;
+    //return i;
+  }
+};
 
 lista_sec buscarLista(list<lista_sec>, string);
-void leerArchivo(string, list <lista_sec> &);
-void conteo(list<lista_sec> );
-int es_subsecuencia(list<lista_sec>,string); 
-void listar_secuencias(list<lista_sec>); 
-void histograma(list<char>,string); 
-void guardarArchivo(string , list<lista_sec>);
-void enmascarar(list<lista_sec> &,string);
+void leerArchivo(string, list<lista_sec> &);
+void conteo(list<lista_sec>);
+int es_subsecuencia(list<lista_sec>, string);
+void listar_secuencias(list<lista_sec>);
+void histograma(list<char>, string);
+void guardarArchivo(string, list<lista_sec>);
+void enmascarar(list<lista_sec> &, string);
 void imprimirLista(list<char>);
+void encriptado(list<lista_sec> listaADN, string nombrearch);
 
+int main()
+{
+  //string t;
+  char comand[50];
+  char *entrada;
+  char *entrada2;
+  char X[100];
+  bool salir = false;
+  list<lista_sec> listaADN;
+  cout << "Bienvenido al sistema de manejo de archivos FASTA" << endl;
+  cout << "SI NECESITA AYUDA DIGITE: ayuda" << endl;
 
-int main() {
-//string t; 
-char comand[50]; 
-char *entrada;
-char *entrada2; 
-char X [100]; 
-bool salir = false; 
-list <lista_sec> listaADN; 
-cout << "Bienvenido al sistema de manejo de archivos FASTA" << endl; 
-cout << "SI NECESITA AYUDA DIGITE: ayuda"<< endl; 
-
-  while(salir != true){
-    cout << "~$ " ;
-    cin.getline(comand, 50, '\n' );
+  while (salir != true)
+  {
+    cout << "~$ ";
+    cin.getline(comand, 50, '\n');
     entrada = strstr(comand, "cargar");
-    entrada2 = strstr(comand, "ayuda");   
-     if(entrada != NULL && entrada2==NULL){
-       cout << "cargando" << endl;
-       char *p; 
-       int conta = 0; 
-       p=strtok(entrada, " ");
-       p=strtok(NULL, " ");
-       strcpy(X, p); 
-       string t(X); 
-       leerArchivo(t, listaADN);
+    entrada2 = strstr(comand, "ayuda");
+    if (entrada != NULL && entrada2 == NULL)
+    { //Cargar archivo
+      cout << "cargando" << endl;
+      char *p;
+      int conta = 0;
+      p = strtok(entrada, " ");
+      p = strtok(NULL, " ");
+      strcpy(X, p);
+      string t(X);
+      leerArchivo(t, listaADN);
+    }
+    else
+    { //Contar
+      entrada = strstr(comand, "conteo");
+      entrada2 = strstr(comand, "ayuda");
+      if (entrada != NULL && entrada2 == NULL)
+      {
+        conteo(listaADN);
       }
-      else {
-          entrada = strstr(comand, "conteo"); 
-          entrada2 = strstr(comand, "ayuda"); 
-          if(entrada != NULL && entrada2==NULL){
-          conteo(listaADN); 
-          } 
-          else {
-                entrada = strstr(comand, "listar_secu");
-                entrada2 = strstr(comand, "ayuda"); 
-                if(entrada != NULL && entrada2==NULL){
-                listar_secuencias(listaADN);
-                } 
-                else {
-                      entrada = strstr(comand, "histograma"); 
-                      entrada2 = strstr(comand, "ayuda"); 
-                      if(entrada != NULL && entrada2==NULL){
-                         
-                        char *q;  
-                        q=strtok(entrada, " ");
-                        q=strtok(NULL, " ");
-                        strcpy(X, q); 
-                        string m(X);
+      else
+      { //Listar secuencias
+        entrada = strstr(comand, "listar_secu");
+        entrada2 = strstr(comand, "ayuda");
+        if (entrada != NULL && entrada2 == NULL)
+        {
+          listar_secuencias(listaADN);
+        }
+        else //Histograma
+        {
+          entrada = strstr(comand, "histograma");
+          entrada2 = strstr(comand, "ayuda");
+          if (entrada != NULL && entrada2 == NULL)
+          {
 
-                        if(listaADN.size()!=0){
-                          cout << "Histograma" << endl;
-                          lista_sec lista_temporal = buscarLista(listaADN,m);
-                          histograma(lista_temporal.secuencias,m); 
-                        }
-                        else{
-                          cout<<"No hay secuencias cargadas."<<endl;
-                        }
-                        
-                      }   
-                      else {
-                            entrada = strstr(comand, "es_subsecuencia");
-                            entrada2 = strstr(comand, "ayuda");  
-                            if(entrada != NULL && entrada2==NULL){
-                             cout << "Buscando subsecuencia" << endl;
-                              char *i;  
-                              i=strtok(entrada, " ");
-                              i=strtok(NULL, " ");
-                              strcpy(X, i); 
-                              string m(X);
+            char *q;
+            q = strtok(entrada, " ");
+            q = strtok(NULL, " ");
+            strcpy(X, q);
+            string m(X);
 
-                              if(listaADN.size()!=0){
-                                  cout<<"Nombre: "<<m<<endl;
-                                  int resultado = es_subsecuencia(listaADN,m);
-                                  if(resultado == 0){
-                                    cout<<"No se han encontrado secuencias iguales."<<endl;
-                                  }
-                                  else{
-                                    cout<<"Se han encontrado "<<resultado<<" secuencias iguales."<<endl;
-                                  }
+            if (listaADN.size() != 0)
+            {
+              cout << "Histograma" << endl;
+              lista_sec lista_temporal = buscarLista(listaADN, m);
+              histograma(lista_temporal.secuencias, m);
+            }
+            else
+            {
+              cout << "No hay secuencias cargadas." << endl;
+            }
+          }
+          else
+          {
+            entrada = strstr(comand, "es_subsecuencia"); //subsecuencia
+            entrada2 = strstr(comand, "ayuda");
+            if (entrada != NULL && entrada2 == NULL)
+            {
+              cout << "Buscando subsecuencia" << endl;
+              char *i;
+              i = strtok(entrada, " ");
+              i = strtok(NULL, " ");
+              strcpy(X, i);
+              string m(X);
+
+              if (listaADN.size() != 0)
+              {
+                cout << "Nombre: " << m << endl;
+                int resultado = es_subsecuencia(listaADN, m);
+                if (resultado == 0)
+                {
+                  cout << "No se han encontrado secuencias iguales." << endl;
+                }
+                else
+                {
+                  cout << "Se han encontrado " << resultado << " secuencias iguales." << endl;
+                }
+              }
+              else
+              {
+                cout << "No hay secuencias cargadas." << endl;
+              }
+            }
+            else
+            {
+              entrada = strstr(comand, "enmascarar"); //Enmascarar
+              entrada2 = strstr(comand, "ayuda");
+              if (entrada != NULL && entrada2 == NULL)
+              {
+
+                char *r;
+                r = strtok(entrada, " ");
+                r = strtok(NULL, " ");
+                strcpy(X, r);
+                string m(X);
+                if (listaADN.size() != 0)
+                {
+                  cout << "Enmascarar" << endl;
+                  cout << "Nombre: " << m << endl;
+                  enmascarar(listaADN, m);
+                }
+                else
+                {
+                  cout << "No hay secuencias cargadas." << endl;
+                }
+              }
+              else
+              {
+                entrada = strstr(comand, "guardar "); //Guardar archivo
+                entrada2 = strstr(comand, "ayuda");
+                if (entrada != NULL && entrada2 == NULL)
+                {
+                  char *o;
+                  o = strtok(entrada, " ");
+                  o = strtok(NULL, " ");
+                  strcpy(X, o);
+                  string m(X);
+                  if (listaADN.size() != 0)
+                  {
+                    cout << "Guardar" << endl;
+                    cout << "Nombre: " << m << endl;
+                    guardarArchivo(m, listaADN);
+                  }
+                  else
+                  {
+                    cout << "No hay secuencias cargadas." << endl;
+                  }
+                }
+                else
+                {
+                  entrada = strstr(comand, "salir"); //salir del programa
+                  entrada2 = strstr(comand, "ayuda");
+                  if (entrada != NULL && entrada2 == NULL)
+                  {
+                    cout << "Saliendo" << endl;
+                    salir = true;
+                  }
+                  else
+                  {
+                    entrada = strstr(comand, "ayuda"); //Listar ayudas
+                    entrada2 = strstr(comand, " ");
+                    if (entrada != NULL && entrada2 == NULL)
+                    {
+                      cout << "_Lista de comandos_" << endl;
+                      cout << "° cargar nombre_archivo: Carga en memoria los datos del archivo seleccionado" << endl;
+                      cout << "° conteo: Muestra la cantidad de secuencias cargadas en memoria" << endl;
+                      cout << "° listar_secuencias: Imprime la información básica de las secuencias cargadas" << endl;
+                      cout << "° histograma descripcion_secuencia: Muestra la fecuencia de cada código en una secuencia dada" << endl;
+                      cout << "° es_subsecuencia subsecuencia: Determina si la secuencia dad existe dentro de las cargadas" << endl;
+                      cout << "° enmascarar secuencia: Enmascara una secuencia dada por el usuario" << endl;
+                      cout << "° guardar nombre_archivo: guarda en un nuevo archivo (nombre_archivo) las secuencias cargadas en memoria" << endl;
+                      cout << "° salir: Terminar ejecucion. Seperderán todos los datos cargados que no se hayan guardado" << endl;
+                      cout << "° clean: Limpia la pantalla" << endl;
+                    }
+                    else
+                    {
+                      entrada = strstr(comand, "clean"); //limpiar pantalla
+                      if (entrada != NULL)
+                      {
+                        system("cls");
+                      }
+                      else
+                      {
+                        entrada = strstr(comand, "ayuda cargar");
+                        if (entrada != NULL)
+                        {
+                          cout << "cargar nombre_archivo: Digite cargar seguido del nombre del archivo que desee abrir para cargarlo" << endl;
+                        }
+                        else
+                        {
+                          entrada = strstr(comand, "ayuda conteo");
+                          if (entrada != NULL)
+                          {
+                            cout << "conteo: Digite conteo para ver la cantidad de secuencias cargadas en memoria" << endl;
+                          }
+                          else
+                          {
+                            entrada = strstr(comand, "ayuda listar_");
+                            if (entrada != NULL)
+                            {
+                              cout << "listar_secuencias: Digite el codigo para ver las secuancias cargadas y su cantidad de bases" << endl;
+                            }
+                            else
+                            {
+                              entrada = strstr(comand, "ayuda histograma");
+                              if (entrada != NULL)
+                              {
+                                cout << "histograma: Digite para ver la frecuencia de aparicion de cada base en una secuencia" << endl;
                               }
-                              else{
-                                   cout<<"No hay secuencias cargadas."<<endl;         
+                              else
+                              {
+                                entrada = strstr(comand, "ayuda es_subsec");
+                                if (entrada != NULL)
+                                {
+                                  cout << "es_subsecuencia secuencia: Ingrese en secuencia la secuencia que desea buscar como subsecuencia" << endl;
+                                  cout << "esto le muestra cuantas veces esta aparece como subsecuencia. EJ: es_subsecuencia ATUACG" << endl;
+                                }
+                                else
+                                {
+                                  entrada = strstr(comand, "ayuda enmascarar");
+                                  if (entrada != NULL)
+                                  {
+                                    cout << "enmascarar secuencia: Ingrese en secuancia la secuencia que desee enmascarar en" << endl;
+                                    cout << "todas las secuencias almacenadas. Se cambiara por el valor X. EJ: enmascarar ACT" << endl;
+                                  }
+                                  else
+                                  {
+                                    entrada = strstr(comand, "ayuda guardar nomb");
+                                    if (entrada != NULL)
+                                    {
+                                      cout << "guardar nombre_archivo: ingrese en nombre_archivo el nombre que desee para el archivo en el que" << endl;
+                                      cout << "se van a escribir las secuencias guardadas en memoria EJ: guardar fastanuevo.fa" << endl;
+                                    }
+                                    else
+                                    {
+                                      entrada = strstr(comand, "codificar"); //
+                                      if (entrada != NULL)
+                                      {
+                                        char *p;
+                                        p = strtok(entrada, " ");
+                                        p = strtok(NULL, " ");
+                                        strcpy(X, p);
+                                        string m(X);
+                                        if (listaADN.size() != 0)
+                                        {
+                                          cout << "Encriptando" << endl;
+                                          cout << "Nombre: " << m << endl;
+                                          encriptado(listaADN, m);
+                                        }
+                                        else
+                                        {
+                                          cout << "Ingrese un comando valido" << endl; //default de error
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
                               }
                             }
-                            else {
-                                  entrada = strstr(comand, "enmascarar");
-                                  entrada2 = strstr(comand, "ayuda");  
-                                  if(entrada != NULL && entrada2==NULL){
-                                       
-                                      char *r;  
-                                      r=strtok(entrada, " ");
-                                      r=strtok(NULL, " ");
-                                      strcpy(X, r); 
-                                      string m(X);
-                                      if(listaADN.size()!=0){
-                                        cout << "Enmascarar" << endl;
-                                        cout<<"Nombre: "<<m<<endl;
-                                        enmascarar(listaADN,m);
-                                      }
-                                      else{
-                                        cout<<"No hay secuencias cargadas."<<endl;
-                                      }
-
-                                  }
-                                  else {
-                                      entrada = strstr(comand, "guardar ");
-                                      entrada2 = strstr(comand, "ayuda"); 
-                                      if(entrada != NULL && entrada2==NULL){
-                                      char *o;  
-                                      o=strtok(entrada, " ");
-                                      o=strtok(NULL, " ");
-                                      strcpy(X, o); 
-                                      string m(X);
-                                      if(listaADN.size()!=0){
-                                        cout << "Guardar" << endl; 
-                                        cout<<"Nombre: "<<m<<endl;
-                                        guardarArchivo(m,listaADN);
-                                      }
-                                      else{
-                                        cout<<"No hay secuencias cargadas."<<endl;
-                                      }
-                                  }
-                                      else {
-                                          entrada = strstr(comand, "salir"); 
-                                          entrada2 = strstr(comand, "ayuda"); 
-                                          if(entrada != NULL && entrada2==NULL){
-                                            cout << "Saliendo" << endl; 
-                                            salir = true; 
-                                          }
-                                          else {
-                                              entrada = strstr(comand, "ayuda"); 
-                                              entrada2 = strstr(comand, " "); 
-                                              if(entrada != NULL && entrada2==NULL){
-                                                  cout << "_Lista de comandos_" << endl; 
-                                                  cout << "° cargar nombre_archivo: Carga en memoria los datos del archivo seleccionado" << endl;
-                                                  cout << "° conteo: Muestra la cantidad de secuencias cargadas en memoria" << endl; 
-                                                  cout << "° listar_secuencias: Imprime la información básica de las secuencias cargadas" << endl;
-                                                  cout << "° histograma descripcion_secuencia: Muestra la fecuencia de cada código en una secuencia dada" << endl;
-                                                  cout << "° es_subsecuencia subsecuencia: Determina si la secuencia dad existe dentro de las cargadas" << endl;
-                                                  cout << "° enmascarar secuencia: Enmascara una secuencia dada por el usuario" << endl;
-                                                  cout << "° guardar nombre_archivo: guarda en un nuevo archivo (nombre_archivo) las secuencias cargadas en memoria" << endl;
-                                                  cout << "° salir: Terminar ejecucion. Seperderán todos los datos cargados que no se hayan guardado" << endl;
-                                                  cout << "° clean: Limpia la pantalla" << endl; 
-                                              }
-                                              else{
-                                                entrada = strstr(comand, "clean");
-                                                if(entrada != NULL){
-                                                  system("cls"); 
-                                                }
-                                                else {
-                                                    entrada = strstr(comand, "ayuda cargar"); 
-                                                    if(entrada != NULL){
-                                                      cout << "cargar nombre_archivo: Digite cargar seguido del nombre del archivo que desee abrir para cargarlo" << endl; 
-                                                    }
-                                                    else{
-                                                      entrada = strstr(comand, "ayuda conteo"); 
-                                                      if(entrada != NULL){
-                                                        cout << "conteo: Digite conteo para ver la cantidad de secuencias cargadas en memoria" << endl; 
-                                                      }
-                                                      else{
-                                                        entrada = strstr(comand, "ayuda listar_");
-                                                        if(entrada!=NULL){
-                                                          cout << "listar_secuencias: Digite el codigo para ver las secuancias cargadas y su cantidad de bases" << endl; 
-                                                        }
-                                                        else{
-                                                          entrada = strstr(comand, "ayuda histograma"); 
-                                                          if(entrada != NULL){
-                                                            cout << "histograma: Digite para ver la frecuencia de aparicion de cada base en una secuencia" << endl; 
-                                                          }
-                                                          else {
-                                                            entrada = strstr(comand, "ayuda es_subsec"); 
-                                                            if(entrada != NULL){
-                                                              cout << "es_subsecuencia secuencia: Ingrese en secuencia la secuencia que desea buscar como subsecuencia" << endl;  
-                                                              cout << "esto le muestra cuantas veces esta aparece como subsecuencia. EJ: es_subsecuencia ATUACG" << endl; 
-                                                            }
-                                                            else{
-                                                              entrada = strstr(comand, "ayuda enmascarar"); 
-                                                              if(entrada != NULL){
-                                                                cout << "enmascarar secuencia: Ingrese en secuancia la secuencia que desee enmascarar en" << endl; 
-                                                                cout << "todas las secuencias almacenadas. Se cambiara por el valor X. EJ: enmascarar ACT" << endl; 
-                                                              }
-                                                              else{
-                                                                entrada = strstr(comand, "ayuda guardar nomb"); 
-                                                                if(entrada!=NULL){
-                                                                  cout << "guardar nombre_archivo: ingrese en nombre_archivo el nombre que desee para el archivo en el que" << endl; 
-                                                                  cout << "se van a escribir las secuencias guardadas en memoria EJ: guardar fastanuevo.fa" << endl; 
-                                                                }
-                                                                else{
-                                                                  cout << "Ingrese un comando valido" << endl;                                                 
-                                                              }
-                                                            }
-                                                          }
-                                                        }
-                                                      }
-
-                                                    }
-                                                  }   
-
-                                                }
-                                                                                               
-                                              }                                                
-                                          }
-                                          }
-                                        }
-                                    }     
-                              } 
-                        }  
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
-
-          }   
+              }
+            }
+          }
+        }
+      }
+      cout << endl;
+    }
   }
-
-  cout << endl;   
-  
-
 }
 
 /*cargar nombre_archivo
@@ -247,60 +322,71 @@ Salida en pantalla.
 (Varias secuencias) n secuencias cargadas correctamente desde “nombre_archivo ”.
 descripción: Carga en memoria los datos contenidos en el archivo identificado por nombre_archivo.*/
 
-void leerArchivo(string archivo, list<lista_sec>& listaADN){
-      ifstream arch; 
-      string txt;
-      char temp[5000]; 
+void leerArchivo(string archivo, list<lista_sec> &listaADN)
+{
+  ifstream arch;
+  string txt;
+  char temp[5000];
 
-     arch.open(archivo, ios::in); //Se abre el archivo
-     if(arch.fail()){ //Condicion por si falla
-       cout << "No se puede abrir" << endl; 
-       exit(1);
-     }
-    ////// 
-    lista_sec aux; 
-    int cont = 0;
-    int ayuda; 
-     while(!arch.eof()){ 
-      char nom [200];
-      ayuda = 0; 
-      getline(arch, txt);
-      strcpy(temp, txt.c_str()); 
+  arch.open(archivo, ios::in); //Se abre el archivo
+  if (arch.fail())
+  { //Condicion por si falla
+    cout << "No se puede abrir" << endl;
+    exit(1);
+  }
+  //////
+  lista_sec aux;
+  int cont = 0;
+  int ayuda;
+  while (!arch.eof())
+  {
+    char nom[200];
+    ayuda = 0;
+    getline(arch, txt);
+    strcpy(temp, txt.c_str());
 
-      for(int j=0; j<txt.size(); j++){
-        if(txt[j] == '>'){
-          ayuda = 1; 
-        }
-      }     
-
-      aux.longitud_linea = txt.size();
-
-      if(ayuda!=0){
-        if(cont > 0){ 
-          listaADN.push_back(aux); 
-          aux.secuencias.clear(); 
-        }
-        cont = 1;         
+    for (int j = 0; j < txt.size(); j++)
+    {
+      if (txt[j] == '>')
+      {
+        ayuda = 1;
       }
-      bool terminado = false;
-      if(ayuda!=0){
-        strcpy(aux.nombre, temp);  
-        ayuda = 0;   
-      } 
-      else {
-          for(int i=0; i<txt.size(); i++){
-            char t = txt[i]; 
-            aux.secuencias.push_back(t);  
-          }         
-      } 
-      if(arch.eof()){
+    }
+
+    aux.longitud_linea = txt.size();
+
+    if (ayuda != 0)
+    {
+      if (cont > 0)
+      {
         listaADN.push_back(aux);
-      }      
-     }
-     
-     cout << listaADN.size() <<" secuencia(s) cargada(s) con exito" << endl; 
-    arch.close();
-} 
+        aux.secuencias.clear();
+      }
+      cont = 1;
+    }
+    bool terminado = false;
+    if (ayuda != 0)
+    {
+      strcpy(aux.nombre, temp);
+      ayuda = 0;
+    }
+    else
+    {
+      for (int i = 0; i < txt.size(); i++)
+      {
+        char t = txt[i];
+        aux.secuencias.push_back(t);
+      }
+    }
+    if (arch.eof())
+    {
+      listaADN.push_back(aux);
+    }
+  }
+
+  cout << listaADN.size() << " secuencia(s) cargada(s) con exito" << endl;
+  arch.close();
+}
 
 /*comando: conteo
 salida en pantalla:
@@ -308,11 +394,15 @@ salida en pantalla:
 (Una sola secuencia) 1 secuencia en memoria.
 (Varias secuencias) n secuencias en memoria.
 descripción: Imprime por pantalla la cantidad de secuencias cargadas en memoria.*/
-void conteo(list<lista_sec> listaADN){
-  if(listaADN.size()>0){
-    cout << listaADN.size() <<" secuencia(s) cargada(s) en memoria "<<endl; 
-  } else {
-    cout << "No hay secuencias cargadas en memoria" << endl; 
+void conteo(list<lista_sec> listaADN)
+{
+  if (listaADN.size() > 0)
+  {
+    cout << listaADN.size() << " secuencia(s) cargada(s) en memoria " << endl;
+  }
+  else
+  {
+    cout << "No hay secuencias cargadas en memoria" << endl;
   }
 }
 
@@ -325,37 +415,48 @@ menos b bases.
 descripción: Imprime en n líneas (una para secuencia) la información básica (cantidad de bases) de
 cada secuencia. Si la secuencia es completa (i.e. no tiene el código ’-’) imprime el segundo mensaje,
 si no, el tercero.*/
-void listar_secuencias(list<lista_sec> listaADN){
-  int a = 0; 
-  if(listaADN.size()==0){
-    cout << "No hay secuencias cargadas" << endl; 
-  } else{
-    list<lista_sec> :: iterator it; 
-     for(it = listaADN.begin(); it != listaADN.end(); ++it){
-       cout << endl; 
-       lista_sec aux1 = *it;  
+void listar_secuencias(list<lista_sec> listaADN)
+{
+  int a = 0;
+  if (listaADN.size() == 0)
+  {
+    cout << "No hay secuencias cargadas" << endl;
+  }
+  else
+  {
+    list<lista_sec>::iterator it;
+    for (it = listaADN.begin(); it != listaADN.end(); ++it)
+    {
+      cout << endl;
+      lista_sec aux1 = *it;
       //para conocer si es indeterminado
-       list<char> :: iterator it2; 
-       for(it2 = aux1.secuencias.begin(); it2 != aux1.secuencias.end(); ++it2){
-         if(*it2 == '-'){
-           a = 1 ;          
-         }
-       }
-      if(a==0){
-        cout << "Secuencia completa de archivo no vacio" << endl; 
+      list<char>::iterator it2;
+      for (it2 = aux1.secuencias.begin(); it2 != aux1.secuencias.end(); ++it2)
+      {
+        if (*it2 == '-')
+        {
+          a = 1;
+        }
+      }
+      if (a == 0)
+      {
+        cout << "Secuencia completa de archivo no vacio" << endl;
         cout << "Secuencia " << aux1.nombre << " contiene " << aux1.secuencias.size() << " bases." << endl;
-      } else {
-        cout << "Secuencia incompleta de archivo no vacio" << endl; 
+      }
+      else
+      {
+        cout << "Secuencia incompleta de archivo no vacio" << endl;
         cout << "Secuencia " << aux1.nombre << " contiene al menos " << aux1.secuencias.size() << " bases." << endl;
       }
-      
-       list<char> :: iterator it1; 
-       for(it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1){
-         cout << *it1; 
-       }
-       cout << endl; 
-     }
-  }    
+
+      list<char>::iterator it1;
+      for (it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1)
+      {
+        cout << *it1;
+      }
+      cout << endl;
+    }
+  }
 }
 
 /*comando: histograma descripcion_secuencia
@@ -366,88 +467,91 @@ descripción: Imprime el histograma de una secuencia, en caso de que exista. El 
 define como el conteo (frecuencia) de cada código en la secuencia. Por cada línea (’\n’ es el
 caracter de salto de línea) se escribe el código y la cantidad de veces que aparece en la secuencia. El
 ordenamiento del histograma está dado por la Tabla 1.*/
-void histograma(list<char> lista,string m){
+void histograma(list<char> lista, string m)
+{
 
+  list<pair<int, char>> bases;
 
-
-  list<pair<int,char>> bases;
-
-  pair<int,char> p1 = make_pair(0,'A');
+  pair<int, char> p1 = make_pair(0, 'A');
   bases.push_back(p1);
-  pair<int,char> p2 = make_pair(0,'C');
+  pair<int, char> p2 = make_pair(0, 'C');
   bases.push_back(p2);
-  pair<int,char> p3 = make_pair(0,'G');
+  pair<int, char> p3 = make_pair(0, 'G');
   bases.push_back(p3);
-  pair<int,char> p4 = make_pair(0,'T');
+  pair<int, char> p4 = make_pair(0, 'T');
   bases.push_back(p4);
-  pair<int,char> p5 = make_pair(0,'U');
+  pair<int, char> p5 = make_pair(0, 'U');
   bases.push_back(p5);
-  pair<int,char> p6 = make_pair(0,'R');
+  pair<int, char> p6 = make_pair(0, 'R');
   bases.push_back(p6);
-  pair<int,char> p7 = make_pair(0,'Y');
+  pair<int, char> p7 = make_pair(0, 'Y');
   bases.push_back(p7);
-  pair<int,char> p8 = make_pair(0,'K');
+  pair<int, char> p8 = make_pair(0, 'K');
   bases.push_back(p8);
-  pair<int,char> p9 = make_pair(0,'M');
+  pair<int, char> p9 = make_pair(0, 'M');
   bases.push_back(p9);
-  pair<int,char> p10 = make_pair(0,'S');
+  pair<int, char> p10 = make_pair(0, 'S');
   bases.push_back(p10);
-  pair<int,char> p11 = make_pair(0,'W');
+  pair<int, char> p11 = make_pair(0, 'W');
   bases.push_back(p11);
-  pair<int,char> p12 = make_pair(0,'B');
+  pair<int, char> p12 = make_pair(0, 'B');
   bases.push_back(p12);
-  pair<int,char> p13 = make_pair(0,'D');
+  pair<int, char> p13 = make_pair(0, 'D');
   bases.push_back(p13);
-  pair<int,char> p14 = make_pair(0,'H');
+  pair<int, char> p14 = make_pair(0, 'H');
   bases.push_back(p14);
-  pair<int,char> p15 = make_pair(0,'V');
+  pair<int, char> p15 = make_pair(0, 'V');
   bases.push_back(p15);
-  pair<int,char> p16 = make_pair(0,'N');
+  pair<int, char> p16 = make_pair(0, 'N');
   bases.push_back(p16);
-  pair<int,char> p17 = make_pair(0,'X');
+  pair<int, char> p17 = make_pair(0, 'X');
   bases.push_back(p17);
 
-  list<char> :: iterator it1;
-  list<pair<int,char>> :: iterator it2;
+  list<char>::iterator it1;
+  list<pair<int, char>>::iterator it2;
   char actual;
 
-  pair <int,char> base_actual;
-  
-     for(it1 = lista.begin(); it1 != lista.end(); ++it1){
-       actual = *it1;
-       for(it2 = bases.begin(); it2 != bases.end(); ++it2){
-         pair<int,char> base_actual = *it2;
-         if(actual == base_actual.second){
-           base_actual.first++;
-           *it2 = base_actual;
-         }
-        }
+  pair<int, char> base_actual;
+
+  for (it1 = lista.begin(); it1 != lista.end(); ++it1)
+  {
+    actual = *it1;
+    for (it2 = bases.begin(); it2 != bases.end(); ++it2)
+    {
+      pair<int, char> base_actual = *it2;
+      if (actual == base_actual.second)
+      {
+        base_actual.first++;
+        *it2 = base_actual;
       }
+    }
+  }
 
-    list<pair<int,char>> :: iterator it3;
+  list<pair<int, char>>::iterator it3;
 
-    for(it3 = bases.begin(); it3 != bases.end(); ++it3){
-         pair<int,char> base_actual = *it3;
-         cout<<"Base: "<<base_actual.second<<" : "<<base_actual.first<<endl;
-         }
-
+  for (it3 = bases.begin(); it3 != bases.end(); ++it3)
+  {
+    pair<int, char> base_actual = *it3;
+    cout << "Base: " << base_actual.second << " : " << base_actual.first << endl;
+  }
 }
 
- lista_sec buscarLista(list<lista_sec> listaADN, string nombre){
+lista_sec buscarLista(list<lista_sec> listaADN, string nombre)
+{
 
-  list<lista_sec> :: iterator it;
+  list<lista_sec>::iterator it;
   lista_sec actual = listaADN.front();
 
-  for(it = listaADN.begin(); it != listaADN.end(); ++it){
+  for (it = listaADN.begin(); it != listaADN.end(); ++it)
+  {
     lista_sec actual = *it;
-    char * nombre_actual = actual.nombre;
-    char * aux = const_cast<char*>(nombre.c_str());
+    char *nombre_actual = actual.nombre;
+    char *aux = const_cast<char *>(nombre.c_str());
 
-    if(strcmp(nombre_actual,aux)==0)
+    if (strcmp(nombre_actual, aux) == 0)
       return *it;
   }
   return *it;
- 
 }
 
 /*comando: es_subsecuencia secuencia
@@ -460,32 +564,29 @@ cargadas. Si es así, determina la cantidad de veces en las que esta secuencia d
 int es_subsecuencia(list<lista_sec> listaADN, string x)
 {
 
- 
+  lista_sec aux = buscarLista(listaADN, x);
+  int veces = 0;
 
-    lista_sec aux = buscarLista(listaADN,x);
-    int veces = 0;
-    
-    list<lista_sec> :: iterator it;
-    for(it = listaADN.begin(); it != listaADN.end() ; ++it)
-    {
-      lista_sec actual = *it;
-      list<char> :: iterator it2;
-      list<char> :: iterator itpsecuencia;
-      for(it2 = actual.secuencias.begin() ; it2 != actual.secuencias.end() ; ++it2)
-          for(itpsecuencia = aux.secuencias.begin() ; itpsecuencia != aux.secuencias.end() ; ++itpsecuencia)
-          {
-            if(*itpsecuencia != *it2){
-              
-            }
-            else{
-              veces++;
-              break;
-            }
-            
-            
-          }
-    }
-return 0;
+  list<lista_sec>::iterator it;
+  for (it = listaADN.begin(); it != listaADN.end(); ++it)
+  {
+    lista_sec actual = *it;
+    list<char>::iterator it2;
+    list<char>::iterator itpsecuencia;
+    for (it2 = actual.secuencias.begin(); it2 != actual.secuencias.end(); ++it2)
+      for (itpsecuencia = aux.secuencias.begin(); itpsecuencia != aux.secuencias.end(); ++itpsecuencia)
+      {
+        if (*itpsecuencia != *it2)
+        {
+        }
+        else
+        {
+          veces++;
+          break;
+        }
+      }
+  }
+  return 0;
 }
 
 /*comando: enmascarar secuencia
@@ -498,31 +599,34 @@ nada.
 descripción: Enmascara una secuencia dada por el usuario, si existe. Los elementos que pertenecen
 a la subsecuencia se enmascaran, cambiando cada código por el código ’X’*/
 
-void imprimirLista(list<char> lista){
-  list<char> :: iterator it;
+void imprimirLista(list<char> lista)
+{
+  list<char>::iterator it;
 
-  for(it = lista.begin(); it != lista.end(); ++it)
-    cout<<*it;
-  cout<<endl;
+  for (it = lista.begin(); it != lista.end(); ++it)
+    cout << *it;
+  cout << endl;
 }
 
-void enmascarar(list<lista_sec> &lista, string nombre){
-  
-  char * nombre_aux = const_cast<char*>(nombre.c_str());
+void enmascarar(list<lista_sec> &lista, string nombre)
+{
 
-  list<lista_sec> :: iterator it;
-  list<char> :: iterator it2;
+  char *nombre_aux = const_cast<char *>(nombre.c_str());
+
+  list<lista_sec>::iterator it;
+  list<char>::iterator it2;
 
   //list<char> aux = *lista;
-    for(it = lista.begin(); it != lista.end(); ++it){
-      lista_sec aux = *it;
-      if(strcmp(aux.nombre,nombre_aux)==0){
-        for(it2 = aux.secuencias.begin(); it2 != aux.secuencias.end(); ++it2)
-          *it2 = 'X';
-        *it = aux;
-      }
-      
+  for (it = lista.begin(); it != lista.end(); ++it)
+  {
+    lista_sec aux = *it;
+    if (strcmp(aux.nombre, nombre_aux) == 0)
+    {
+      for (it2 = aux.secuencias.begin(); it2 != aux.secuencias.end(); ++it2)
+        *it2 = 'X';
+      *it = aux;
     }
+  }
 }
 /* comando: guardar nombre_archivo
 salida en pantalla:
@@ -531,30 +635,32 @@ salida en pantalla:
 (Problemas en archivo) Error guardando en ”nombre_archivo ”.
 descripción: Guarda en el archivo nombre_archivo las secuencias cargadas en memoria. Se debe
 tener en cuenta la justificación (de líneas) del archivo inicial. */
-void guardarArchivo(string nombre, list<lista_sec> lista){
-   ofstream archivo; 
-    archivo.open(nombre, ios::out);
+void guardarArchivo(string nombre, list<lista_sec> lista)
+{
+  ofstream archivo;
+  archivo.open(nombre, ios::out);
 
-    if(archivo.fail()){
-         cout << "No se pudo abrir abrir el archivo" << endl; 
-         exit(1); 
-    }
-    
-    list<lista_sec> :: iterator it;
-    lista_sec actual;
-    for(it = lista.begin(); it != lista.end(); ++it)
+  if (archivo.fail())
+  {
+    cout << "No se pudo abrir abrir el archivo" << endl;
+    exit(1);
+  }
+
+  list<lista_sec>::iterator it;
+  lista_sec actual;
+  for (it = lista.begin(); it != lista.end(); ++it)
+  {
+    actual = *it;
+    list<char>::iterator it2;
+    archivo << actual.nombre << "\n";
+    for (it2 = actual.secuencias.begin(); it2 != actual.secuencias.end(); ++it2)
     {
-      actual = *it;
-      list<char> :: iterator it2;
-      archivo<<actual.nombre<<"\n";
-      for(it2 = actual.secuencias.begin(); it2 != actual.secuencias.end(); ++it2)
-      {
-          archivo << *it2;
-      }
-      archivo <<"\n";
+      archivo << *it2;
     }
+    archivo << "\n";
+  }
 
-    archivo.close();
+  archivo.close();
 }
 
 /*comando: salir
@@ -562,12 +668,6 @@ salida en pantalla:
 (No tiene salida por pantalla)
 descripción: Termina la ejecución de la aplicación*/
 //-ESTE COMANDO SE EJECUTA EN EL MENU INICIAL-//
-
-
-//__________________________________________________//
-//A PARTIR DE ACA ES EL CÓDIGO DE LA SEGUNDA ENTREGA
-//            ALGORITMO DE HUFFMAN                  //
-// ______________________________________________//
 
 /*
 comando: codificar nombre_archivo.fabin
@@ -578,15 +678,87 @@ descripción: El comando debe generar el archivo binario con la correspondiente 
 Huffman en el formato descrito más arriba, almacenándolo en disco bajo el nombre:
 nombre_archivo.fabin .
 */
-
-void codificaHuffman(string archivo, list<lista_sec>& listaADN){
-  //Llamada a leerArchivo para cargar las secuencias de un archivo 
-  //a ecriptar en memoria
-  leerArchivo(archivo, listaADN);
-
-
+//Construcción del arbol y llenado
+nodo_huffman *asigna_valor(char base, int frecuenc, nodo_huffman *izquierdo, nodo_huffman *derecho)
+{
+  nodo_huffman *aux = new nodo_huffman();
+  //aux = new nodo_huffman();
+  aux->base = base;
+  aux->frecuen = frecuenc;
+  aux->izquierdo = izquierdo;
+  aux->derecho = derecho;
+  return aux;
 }
 
+void encriptaHuffman(nodo_huffman *raiz, string cadena, unordered_map<char, string> &codificacion)
+{
+  if (raiz == nullptr)
+  {
+    return; //
+  }
+  if (!raiz->izquierdo && !raiz->derecho)
+  {
+    codificacion[raiz->base] = cadena;
+  }
+  encriptaHuffman(raiz->izquierdo, cadena + "0", codificacion);
+  encriptaHuffman(raiz->derecho, cadena + "1", codificacion);
+}
+
+void encriptado(list<lista_sec> listaADN, string nombrearch)
+{
+
+  char X[100];
+  unordered_map<char, int> frecuen;
+
+  //Recorrido a toda la lista de secuencias cargadas
+
+  list<lista_sec>::iterator it;
+  for (it = listaADN.begin(); it != listaADN.end(); ++it)
+  {
+    //Almacenamiento de cada letra para contar sus frecuencias
+    lista_sec aux = *it;
+    strcpy(X, aux.nombre);
+    string m(X);
+    for (char base : m)
+    {
+      frecuen[base]++;
+    }
+    list<char>::iterator it2;
+    for (it2 = aux.secuencias.begin(); it2 != aux.secuencias.end(); ++it2)
+    {
+      char aux2 = *it2;
+      frecuen[aux2]++;
+    }
+    //Fin de lectura inicial
+    //Se agragan los nodos
+    priority_queue<nodo_huffman *, vector<nodo_huffman *>, buscafrecuencia> colapriori;
+    for (auto val : frecuen)
+    {
+      colapriori.push(asigna_valor(val.first, val.second, nullptr, nullptr));
+    }
+    while (colapriori.size() != 1)
+    {
+      nodo_huffman *izquierdo = colapriori.top();
+      colapriori.pop();
+      nodo_huffman *derecho = colapriori.top();
+      colapriori.pop();
+      int total = izquierdo->frecuen + derecho->frecuen;
+      colapriori.push(asigna_valor('\0', total, izquierdo, derecho));
+    }
+
+    //Creamos la raiz
+    nodo_huffman *raiz = colapriori.top();
+    unordered_map<char, string> codificacion;
+
+    encriptaHuffman(raiz, "", codificacion);
+
+    cout << "Codigos de huffman son: " << endl; //
+    for (auto pair : codificacion)
+    {
+      cout << pair.first << " " << pair.second << endl;
+    }
+  }
+}
 
 /*
 comando: decodificar nombre_archivo.fabin
@@ -598,10 +770,3 @@ descripción: El comando debe cargar en memoria las secuencias contenidas en el 
 nombre_archivo.fabin , que contiene una codificación Huffman de un conjunto de secuencias en
 el formato descrito más arriba
 */
-
-
-
-
-
-
-
