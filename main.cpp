@@ -6,6 +6,19 @@
 #include <string>
 #include <unordered_map>
 
+
+
+/*
+  ==================
+  Desarrollado por: Nicolas Barragan, Steban Vanegas, Cristian Gonzalez
+  Segunda entrega. Proyecto estructuras de datos
+  ==================
+*/
+
+
+
+
+
 using namespace std;
 
 struct lista_sec
