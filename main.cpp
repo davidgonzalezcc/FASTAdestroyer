@@ -931,7 +931,12 @@ void desencriptar(string nombrearch)
     }
     
     cout << "El contenido decodificado de " << nombrearch << " es: " << endl; 
+
     
+
+
+
+
 
     
 
