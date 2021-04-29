@@ -52,6 +52,7 @@ void imprimirLista(list<char>);
 void encriptado(list<lista_sec> listaADN, string nombrearch);
 void imprimeHuffman(unordered_map<char, string> codificacion);
 void listar_codificados(list<lista_sec_codifica> auxiliar);
+void desencriptar(string nombrearch);
 
 int main()
 {
@@ -222,6 +223,8 @@ int main()
                       cout << "° enmascarar secuencia: Enmascara una secuencia dada por el usuario" << endl;
                       cout << "° guardar nombre_archivo: guarda en un nuevo archivo (nombre_archivo) las secuencias cargadas en memoria" << endl;
                       cout << "° salir: Terminar ejecucion. Seperderán todos los datos cargados que no se hayan guardado" << endl;
+                      cout << "° codificar nombre.fabin: codifca en un archivo de nombre  (nombre.fabin) las secuencias en memoria" << endl;
+                      cout << "° decodificar nombre.fabin: decodifca un archivo de nombre  (nombre.fabin) e imprime su contenido original" << endl;
                       cout << "° clean: Limpia la pantalla" << endl;
                     }
                     else
@@ -285,8 +288,8 @@ int main()
                                     }
                                     else
                                     {
-                                      entrada = strstr(comand, "codificar"); //
-                                      if (entrada != NULL)
+                                      entrada = strstr(comand, "codificar"); 
+                                      if (entrada != NULL && strstr(comand, "de") == NULL)
                                       {
                                         char *p;
                                         p = strtok(entrada, " ");
@@ -301,7 +304,25 @@ int main()
                                         }
                                         else
                                         {
-                                          cout << "Ingrese un comando valido" << endl; //default de error
+                                          entrada = strstr(comand, "decodificar");
+                                          if (entrada != NULL && strstr(comand, "de") != NULL)
+                                          {
+                                            char *q;
+                                            q = strtok(entrada, " ");
+                                            q = strtok(NULL, " ");
+                                            strcpy(X, q);
+                                            string m(X);
+                                            if (listaADN.size() != 0)
+                                            {
+                                              cout << "desencriptando" << endl;
+                                              cout << "Nombre: " << m << endl;
+                                              desencriptar(m);
+                                            }
+                                            else
+                                            {
+                                              cout << "Digite un comando valido" << endl;
+                                            }
+                                          }
                                         }
                                       }
                                     }
@@ -704,21 +725,21 @@ void encriptaHuffman(nodo_huffman *raiz, string cadena, unordered_map<char, stri
 {
   if (raiz == nullptr)
   {
-    return; //Verifica que la raiz haya sido creada 
+    return; //Verifica que la raiz haya sido creada
   }
   if (!raiz->izquierdo && !raiz->derecho)
   {
     codificacion[raiz->base] = cadena;
   }
   encriptaHuffman(raiz->izquierdo, cadena + "0", codificacion); //recurisvidad. La raiz cambia por el nodo izquierdo
-  encriptaHuffman(raiz->derecho, cadena + "1", codificacion); //Recursividad. La raiz cambia por el nodo derecho
+  encriptaHuffman(raiz->derecho, cadena + "1", codificacion);   //Recursividad. La raiz cambia por el nodo derecho
 }
 
 void encriptado(list<lista_sec> listaADN, string nombrearch)
 {
 
   char X[100];
-  unordered_map<char, int> frecuen; //Mapa para guardar inicialmente nuestras bases y la cantidad de veces que aparecen 
+  unordered_map<char, int> frecuen; //Mapa para guardar inicialmente nuestras bases y la cantidad de veces que aparecen
 
   //Recorrido a toda la lista de secuencias cargadas
 
@@ -728,7 +749,7 @@ void encriptado(list<lista_sec> listaADN, string nombrearch)
     //Almacenamiento de cada letra para contar sus frecuencias
     lista_sec aux = *it;
     strcpy(X, aux.nombre);
-    string m(X); //Conversion de char a string para recorerlo 
+    string m(X);        //Conversion de char a string para recorerlo
     for (char base : m) //Base es el elemento temporal que almacena lo que hay en m. Funciona hasta que acaba el string
     {
       frecuen[base]++; // se almacena la base en el char y se hace incremento a las veces que aparece (PARA EL NOMBRE)
@@ -737,7 +758,7 @@ void encriptado(list<lista_sec> listaADN, string nombrearch)
     for (it2 = aux.secuencias.begin(); it2 != aux.secuencias.end(); ++it2)
     {
       char aux2 = *it2; //Variable que almacena lo que contiene el iterador que recorre la lista
-      frecuen[aux2]++; //Se almacena la base o en caso de que ya exista se hace incremento. (PARA LA CADENA DE ADN)
+      frecuen[aux2]++;  //Se almacena la base o en caso de que ya exista se hace incremento. (PARA LA CADENA DE ADN)
     }
   } //Fin del for //Este almacena cada letra con sus secuencias
 
@@ -746,7 +767,7 @@ void encriptado(list<lista_sec> listaADN, string nombrearch)
   //Se agregan los nodos
   for (auto val : frecuen)
   {
-    colapriori.push(asigna_valor(val.first, val.second, nullptr, nullptr)); //Guarda en la cola de prioridad el primer valor y segundo de la lista de frecuencias. 
+    colapriori.push(asigna_valor(val.first, val.second, nullptr, nullptr)); //Guarda en la cola de prioridad el primer valor y segundo de la lista de frecuencias.
   }
   while (colapriori.size() != 1)
   {
@@ -759,8 +780,8 @@ void encriptado(list<lista_sec> listaADN, string nombrearch)
   }
 
   //Creamos la raiz
-  nodo_huffman *raiz = colapriori.top(); //RAIZ DEL ARBOL apuntado a cabeza de la cola de prioridad
-  unordered_map<char, string> codificacion; //En este mapa se almacenan las bases y su frecuenia. 
+  nodo_huffman *raiz = colapriori.top();    //RAIZ DEL ARBOL apuntado a cabeza de la cola de prioridad
+  unordered_map<char, string> codificacion; //En este mapa se almacenan las bases y su frecuenia.
 
   encriptaHuffman(raiz, "", codificacion); //Paso de parametro para llenado de codificación arrancando desde la raíz
 
@@ -816,9 +837,9 @@ void encriptado(list<lista_sec> listaADN, string nombrearch)
   cin >> des;
   if (des == 0)
   {
-    imprimeHuffman(codificacion); //Esto imprime el mapa. Donde se muestra para cada variable el equivalente en binario que le fue asignado 
-    cout << "___________________" << endl; 
-    listar_codificados(auxiliar); // LLamado para imprimir todo codificado 
+    imprimeHuffman(codificacion); //Esto imprime el mapa. Donde se muestra para cada variable el equivalente en binario que le fue asignado
+    cout << "___________________" << endl;
+    listar_codificados(auxiliar); // LLamado para imprimir todo codificado
   }
   else
   {
@@ -854,7 +875,7 @@ void listar_codificados(list<lista_sec_codifica> auxiliar) //Imprime las secuenc
       cout << endl;
       lista_sec_codifica aux1 = *it;
 
-      cout << aux1.nombre << endl; 
+      cout << aux1.nombre << endl;
 
       list<string>::iterator it1;
       for (it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1)
@@ -879,6 +900,7 @@ el formato descrito más arriba
 
 void desencriptar(string nombrearch)
 {
+  unordered_map<char, int> frecuen;
   list<lista_sec_codifica> auxiliar;
   FILE *pf;
   pf = fopen(nombrearch.c_str(), "rb");
@@ -891,13 +913,14 @@ void desencriptar(string nombrearch)
   }
   else
   {
+    cout << "El contenido codificado es: " << endl;
     list<lista_sec_codifica>::iterator it;
     for (it = auxiliar.begin(); it != auxiliar.end(); ++it)
     {
       cout << endl;
       lista_sec_codifica aux1 = *it;
 
-      cout << aux1.nombre << endl; 
+      cout << aux1.nombre << endl;
 
       list<string>::iterator it1;
       for (it1 = aux1.secuencias.begin(); it1 != aux1.secuencias.end(); ++it1)
@@ -906,8 +929,16 @@ void desencriptar(string nombrearch)
       }
       cout << endl;
     }
-  }
+    
+    cout << "El contenido decodificado de " << nombrearch << " es: " << endl; 
+    
 
-   
+    
+
+
+
+
+
+
 
 }
