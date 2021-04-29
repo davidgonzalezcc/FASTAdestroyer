@@ -288,7 +288,7 @@ int main()
                                     }
                                     else
                                     {
-                                      entrada = strstr(comand, "codificar"); 
+                                      entrada = strstr(comand, "codificar");
                                       if (entrada != NULL && strstr(comand, "de") == NULL)
                                       {
                                         char *p;
@@ -929,21 +929,13 @@ void desencriptar(string nombrearch)
       }
       cout << endl;
     }
-    
-    cout << "El contenido decodificado de " << nombrearch << " es: " << endl; 
+
+    cout << "El contenido decodificado de " << nombrearch << " es: " << endl;
 
     
 
 
 
 
-
-    
-
-
-
-
-
-
-
+  }
 }
