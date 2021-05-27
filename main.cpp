@@ -5,6 +5,7 @@
 #include <queue>
 #include <string>
 #include <unordered_map>
+#include "grafo.h"
 
 /*
   ==================
@@ -57,6 +58,9 @@ void guardarArchivo(string, list<lista_sec>);
 void enmascarar(list<lista_sec> &, string);
 void imprimirLista(list<char>);
 void encriptado(list<lista_sec> listaADN, string nombrearch);
+float calcularDistancia(char base_origen, char base_destino);
+void inicializarGrafo(char matriz[][1000], int, int, int , int , int , int , int );
+int calcularIndice(int i, int j, int tam);
 void imprimeHuffman(unordered_map<char, string> codificacion);
 void listar_codificados(list<lista_sec_codifica> auxiliar);
 void desencriptar(string nombrearch);
@@ -973,5 +977,90 @@ void desencriptar(string nombrearch)
     }
 
     cout << "El contenido decodificado de " << nombrearch << " es: " << endl;
+  }
+}
+
+////TERCERA ENTREGA////////////////////////////////////
+float calcularDistancia(char base_origen, char base_destino)
+{
+  float p = 0;
+  float resta = 0;
+  resta = (float)base_origen - (float)base_destino;
+
+  if (resta < 0)
+  {
+    resta = resta * (-1);
+  }
+  p = 1 / (1 + resta);
+  return p;
+}
+
+int calcularIndice(int i, int j, int tam)
+{
+  int posicion = 0;
+  posicion = (i * tam) + j;
+  return posicion;
+}
+
+void inicializarGrafo(char matriz[][1000], int fil, int col, int i_ori, int j_ori, int i_dest, int j_dest, int buscar)
+{
+  int v = 0;
+  long vertice_base_origen = 0, vertice_base_destino = 0;
+  char actual;
+  for (int i = 0; i < fil; i++)
+  {
+    for (int j = 0; j < col; j++)
+    {
+      v++;
+    }
+  }
+
+  Grafo<char> g(v);
+  int conta = 0;
+
+  for (int i = 0; i < fil; i++)
+  {
+    for (int j = 0; j < col; j++)
+    {
+      actual = matriz[i][j];
+      g.insertarVertice(actual);
+      if (i == i_ori && j == j_ori)
+      {
+        vertice_base_origen = conta;
+      }
+      if (i == i_dest && j == j_dest)
+      {
+        vertice_base_destino = conta;
+      }
+      conta++;
+    }
+  }
+
+  for (int i = 0; i < fil; i++)
+  {
+    for (int j = 0; j < col; j++)
+    {
+      if (i - 1 >= 0 && i - 1 < fil)
+      {
+        g.insertarArista(calcularIndice(i, j, col),
+                         calcularIndice(i - 1, j, col), calcularDistancia(matriz[i][j], matriz[i - 1][j]));
+      }
+      if (i + 1 >= 0 && i + 1 < fil)
+      {
+        g.insertarArista(calcularIndice(i, j, col),
+                         calcularIndice(i + 1, j, col), calcularDistancia(matriz[i][j], matriz[i + 1][j]));
+      }
+      if (j + 1 >= 0 && j + 1 < col)
+      {
+        g.insertarArista(calcularIndice(i, j, col),
+                         calcularIndice(i, j + 1, col), calcularDistancia(matriz[i][j], matriz[i][j + 1]));
+        ;
+      }
+      if (j - 1 >= 0 && j - 1 < col)
+      {
+        g.insertarArista(calcularIndice(i, j, col),
+                         calcularIndice(i, j - 1, col), calcularDistancia(matriz[i][j], matriz[i][j - 1]));
+      }
+    }
   }
 }
