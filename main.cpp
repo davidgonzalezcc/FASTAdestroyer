@@ -6,18 +6,12 @@
 #include <string>
 #include <unordered_map>
 
-
-
 /*
   ==================
   Desarrollado por: Nicolas Barragan, Steban Vanegas, Cristian Gonzalez
-  Segunda entrega. Proyecto estructuras de datos
+  Tercera. Proyecto estructuras de datos
   ==================
 */
-
-
-
-
 
 using namespace std;
 
@@ -238,6 +232,8 @@ int main()
                       cout << "° salir: Terminar ejecucion. Seperderán todos los datos cargados que no se hayan guardado" << endl;
                       cout << "° codificar nombre.fabin: codifca en un archivo de nombre  (nombre.fabin) las secuencias en memoria" << endl;
                       cout << "° decodificar nombre.fabin: decodifca un archivo de nombre  (nombre.fabin) e imprime su contenido original" << endl;
+                      cout << "° ruta_mas_corta descripcionsecuencia: Imprime la secuencia de vertices mas corta entro 2 de los mismos" << endl;
+                      cout << "° base_remota descripcionsecuencia: Busca la ubicacion mas cercana de un vertice igual a otro" << endl;
                       cout << "° clean: Limpia la pantalla" << endl;
                     }
                     else
@@ -333,7 +329,41 @@ int main()
                                             }
                                             else
                                             {
-                                              cout << "Digite un comando valido" << endl;
+                                              entrada = strstr(comand, "ruta_mas_corta");
+                                              if (entrada != NULL)
+                                              {
+                                                char *q;
+                                                q = strtok(entrada, " ");
+                                                q = strtok(NULL, " ");
+                                                strcpy(X, q);
+                                                string m(X);
+                                                if (listaADN.size() != 0)
+                                                {
+                                                  cout << "Buscando ruta mas corta" << endl;
+                                                  cout << "Nombre: " << m << endl;
+                                                  //desencriptar(m);
+                                                }
+                                                else
+                                                {
+                                                  entrada = strstr(comand, "base_remota");
+                                                  if (entrada != NULL)
+                                                  {
+                                                    char *q;
+                                                    q = strtok(entrada, " ");
+                                                    q = strtok(NULL, " ");
+                                                    strcpy(X, q);
+                                                    string m(X);
+                                                    if (listaADN.size() != 0)
+                                                    {
+                                                      cout << "Buscando base remota" << endl;
+                                                    }
+                                                    else
+                                                    {
+                                                      cout << "Digite un comando valido" << endl;
+                                                    }
+                                                  }
+                                                }
+                                              }
                                             }
                                           }
                                         }
@@ -353,12 +383,11 @@ int main()
             }
           }
         }
+        cout << endl;
       }
-      cout << endl;
     }
   }
 }
-
 /*cargar nombre_archivo
 Salida en pantalla. 
 (Archivo vacío) “nombre_archivo ” no contiene ninguna secuencia.
@@ -944,11 +973,5 @@ void desencriptar(string nombrearch)
     }
 
     cout << "El contenido decodificado de " << nombrearch << " es: " << endl;
-
-    
-
-
-
-
   }
 }
